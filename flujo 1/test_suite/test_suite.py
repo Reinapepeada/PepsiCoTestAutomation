@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.chrome.options import Options
 import time
 import HtmlTestRunner
 
@@ -10,11 +11,13 @@ URL="https://09384038:ARbg95917284.@meswebgsftmexicali.azure.intra.pepsico.com/T
 
 class suite(unittest.TestCase):
     def setUp(self):
-        chrome_options=webdriver.ChromeOptions()
-        chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
-        chrome_options.accept_insecure_certs=True
-        chrome_options.add_argument('ignore-certificate-errors')
-        self.driver = webdriver.Chrome('/chromedriver.exe',chrome_options=chrome_options)
+        options=Options()
+        options.add_experimental_option("excludeSwitches", ['enable-automation'])
+        options.accept_insecure_certs=True
+        options.page_load_strategy='eager'
+        options.add_argument('ignore-certificate-errors')
+        options.page_load_strategy='none'
+        self.driver = webdriver.Chrome('/chromedriver.exe',options=options)
         self.vars = {}
         
     def test_tC01MPC01DPAccessTWXdashboard(self):
@@ -22,8 +25,8 @@ class suite(unittest.TestCase):
         # Step # | name | target | value
         # 1 | open | URL
         self.driver.get(URL)
-        # 3 | waitForElementPresent | id=root_pagemashupcontainer-6_ContainedMashup-12_mashup-root | 30000
-        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.ID, "root_pagemashupcontainer-6_ContainedMashup-12_mashup-root")))
+        # 3 | waitForElementPresent | id=//*[@id='root_pagemashupcontainer-6_ContainedMashup-12_flexcontainer-131-bounding-box'] | 30000
+        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.XPATH, "//*[@id='root_pagemashupcontainer-6_ContainedMashup-12_flexcontainer-131-bounding-box']")))
         # 4 | assertTitle | PepsiCo Apps - Mexicali | 
         # has entrado en el dashboard con éxito
         assert self.driver.title == "PepsiCo Apps - Mexicali"
@@ -35,7 +38,7 @@ class suite(unittest.TestCase):
         self.driver.get(URL)
         time.sleep(6)
         # 2 | waitForElementVisible | id=root_pagemashupcontainer-6_ContainedMashup-13_ptcstabset-237 | 5000
-        WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.ID, "root_pagemashupcontainer-6_ContainedMashup-13_ptcstabset-237")))
+        WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located((By.XPATH, '//*[@id="root_pagemashupcontainer-6_ContainedMashup-12_flexcontainer-131-bounding-box"]')))
         time.sleep(2)
         # 3 | click | css=#flexcontainer-103-expand-btn > .tw-icon | 
         self.driver.find_element(By.CSS_SELECTOR, "#flexcontainer-103-expand-btn > .tw-icon").click()
@@ -47,7 +50,7 @@ class suite(unittest.TestCase):
   
     def test_tC02MPC02DPEntitySelectionleftslider(self):
         self.driver.get(URL)
-        WebDriverWait(self.driver, 50).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, "#root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_gridadvanced-109-grid-advanced > .objbox")))
+        WebDriverWait(self.driver, 50).until(expected_conditions.visibility_of_element_located((By.XPATH, '//*[@id="root_pagemashupcontainer-6_ContainedMashup-12_flexcontainer-131-bounding-box"]')))
         
         self.driver.find_element(By.ID, "flexcontainer-103-expand-btn").click()
         time.sleep(2)
@@ -105,7 +108,7 @@ class suite(unittest.TestCase):
         # 1 | open | https://09384038:ARbg95917284.@meswebgsftmexicali.azure.intra.pepsico.com/Thingworx/Runtime/index.html#master=PepsiCo_Master&mashup=MES_Dashboard&__applyThemeName=PepsiCo%20Default%20Theme&_refreshTS=1670527225809 | 
         self.driver.get(URL)
         # 2 | waitForElementPresent | css=#root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_gridadvanced-109-grid-advanced > .objbox | 30000
-        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, "#root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_gridadvanced-109-grid-advanced > .objbox")))
+        WebDriverWait(self.driver, 60).until(expected_conditions.presence_of_element_located((By.XPATH, '//*[@id="root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_gridadvanced-109-grid-advanced"]/div[2]/table')))
         # 3 | assertElementPresent | xpath=//*[@id="root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_gridadvanced-109-grid-advanced"]/div[2]/table/tbody/tr[2] | 
         time.sleep(3)
         elements = self.driver.find_elements(By.XPATH, "//*[@id=\"root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_gridadvanced-109-grid-advanced\"]/div[2]/table/tbody/tr[2]")

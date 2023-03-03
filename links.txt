@@ -1,6 +1,0 @@
-https://www.browserstack.com/docs/automate/selenium/getting-started/python
-https://www.browserstack.com/docs/automate/selenium/getting-started/python/local-testing-sdk
-https://www.browserstack.com/docs/automate/selenium/getting-started/python/local-testing-sdk
-https://www.browserstack.com/docs/automate/selenium/github-actions
-https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
-https://github.com/browserstack/python-selenium-browserstack
