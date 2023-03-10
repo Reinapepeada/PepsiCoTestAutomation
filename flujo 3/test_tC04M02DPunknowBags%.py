@@ -43,7 +43,14 @@ class TestTC04M02DPDowntimetimes():
       goodbags=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(7)+']').text
       tuboNombre = self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(7)+']').text
       unknownBags=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(12)+']').text
-      porcentUnknow=int(unknownBags)*100//int(goodbags)
+      
+      if int(goodbags)>0 and int(unknownBags)>0:
+        porcentUnknow=int(unknownBags)*100//int(goodbags)
+      elif int(unknownBags)==0:
+        continue
+      else:
+        errores+=f" El valor de goodbags del tubo '{tuboNombre}' esta en 0 \n"
+
 
       if porcentUnknow<0:
         porcentUnknow*=-1

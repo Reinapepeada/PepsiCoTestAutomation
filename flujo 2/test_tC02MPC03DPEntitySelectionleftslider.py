@@ -33,8 +33,7 @@ class TestTC02MPC03DPEntitySelectionleftslider():
     time.sleep(1)
     # 5 | click | xpath=//body[@id='runtime']/ptcs-list | 
     self.driver.execute_script(f'return document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(1)")').click()
-   # 7 | assertElementPresent | id=root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100 | 
-    time.sleep(4)
+  
   
 if __name__=='__main__':
   pytest.main()

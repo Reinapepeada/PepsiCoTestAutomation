@@ -49,9 +49,10 @@ class TestTC04M01DPDowntimetimes():
       goodbags=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(7)+']').text
       tuboNombre = self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(1)+']').text
       totalWaste=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(6)+']').text
-
-      porcentWaste=int(totalWaste)*100//int(goodbags)
-      
+      if int(goodbags)>0 :
+        porcentWaste=int(totalWaste)*100//int(goodbags)
+      else:
+        errores+=f" El valor de goodbags del tubo '{tuboNombre}' esta en 0 \n"
       if porcentWaste>10:
          errores+= f"El porcentaje de waste respecto a las good bags es mas de 10% en el tubo {tuboNombre} \n"
       
