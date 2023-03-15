@@ -253,7 +253,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
 }
 </script>
     <h1>reportes.html</h1>
-    <p>Report generated on 10-Mar-2023 at 10:48:24 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
+    <p>Report generated on 15-Mar-2023 at 12:33:47 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
     <h2>Environment</h2>
     <table id="environment">
       <tr>
@@ -269,7 +269,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
         <td>Python</td>
         <td>3.11.1</td></tr></table>
     <h2>Summary</h2>
-    <p>1 tests ran in 8.03 seconds. </p>
+    <p>1 tests ran in 59.49 seconds. </p>
     <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">0 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">1 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
     <h2>Results</h2>
     <table id="results-table">
@@ -285,8 +285,120 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
         <tr>
           <td class="col-result">Failed</td>
           <td class="col-name">test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues.py::TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues::test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues</td>
-          <td class="col-duration">6.10</td>
+          <td class="col-duration">58.90</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
-            <div class="log">self = &lt;test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues.TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues object at 0x0000023767C55A10&gt;<br/><br/>    def test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues(self):<br/>      self.driver.get(&quot;https://09384038:ARbg95917284.@meswebgsftmexicali.azure.intra.pepsico.com/Thingworx/Runtime/index.html#master=PepsiCo_Master&amp;mashup=MES_Dashboard&amp;__applyThemeName=PepsiCo%20Default%20Theme&amp;_refreshTS=1670527225809&quot;)<br/>      # 2 | waitForElementPresent | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box&#x27;]/div[3] | 11000<br/>&gt;     WebDriverWait(self.driver, 100).until(expected_conditions.presence_of_element_located((By.XPATH, &quot;//div[@id=\&#x27;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box\&#x27;]/div[3]&quot;)))<br/><br/>test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues.py:22: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _<br/>..\..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\selenium\webdriver\support\wait.py:86: in until<br/>    value = method(self._driver)<br/>..\..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\selenium\webdriver\support\expected_conditions.py:64: in _predicate<br/>    return driver.find_element(*locator)<br/>..\..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\selenium\webdriver\remote\webdriver.py:861: in find_element<br/>    return self.execute(Command.FIND_ELEMENT, {&quot;using&quot;: by, &quot;value&quot;: value})[&quot;value&quot;]<br/>..\..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\selenium\webdriver\remote\webdriver.py:444: in execute<br/>    self.error_handler.check_response(response)<br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _<br/><br/>self = &lt;selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x0000023764669710&gt;<br/>response = {&#x27;status&#x27;: 404, &#x27;value&#x27;: &#x27;{&quot;value&quot;:{&quot;error&quot;:&quot;no such window&quot;,&quot;message&quot;:&quot;no such window: target window already closed\\...\n\\tRtlGetAppContainerNamedObjectPath [0x77097BBE+286]\\n\\tRtlGetAppContainerNamedObjectPath [0x77097B8E+238]\\n&quot;}}&#x27;}<br/><br/>    def check_response(self, response: Dict[str, Any]) -&gt; None:<br/>        &quot;&quot;&quot;<br/>        Checks that a JSON response from the WebDriver does not have an error.<br/>    <br/>        :Args:<br/>         - response - The JSON response from the WebDriver server as a dictionary<br/>           object.<br/>    <br/>        :Raises: If the response contains an error message.<br/>        &quot;&quot;&quot;<br/>        status = response.get(&quot;status&quot;, None)<br/>        if not status or status == ErrorCode.SUCCESS:<br/>            return<br/>        value = None<br/>        message = response.get(&quot;message&quot;, &quot;&quot;)<br/>        screen: str = response.get(&quot;screen&quot;, &quot;&quot;)<br/>        stacktrace = None<br/>        if isinstance(status, int):<br/>            value_json = response.get(&quot;value&quot;, None)<br/>            if value_json and isinstance(value_json, str):<br/>                import json<br/>    <br/>                try:<br/>                    value = json.loads(value_json)<br/>                    if len(value.keys()) == 1:<br/>                        value = value[&quot;value&quot;]<br/>                    status = value.get(&quot;error&quot;, None)<br/>                    if not status:<br/>                        status = value.get(&quot;status&quot;, ErrorCode.UNKNOWN_ERROR)<br/>                        message = value.get(&quot;value&quot;) or value.get(&quot;message&quot;)<br/>                        if not isinstance(message, str):<br/>                            value = message<br/>                            message = message.get(&quot;message&quot;)<br/>                    else:<br/>                        message = value.get(&quot;message&quot;, None)<br/>                except ValueError:<br/>                    pass<br/>    <br/>        exception_class: Type[WebDriverException]<br/>        if status in ErrorCode.NO_SUCH_ELEMENT:<br/>            exception_class = NoSuchElementException<br/>        elif status in ErrorCode.NO_SUCH_FRAME:<br/>            exception_class = NoSuchFrameException<br/>        elif status in ErrorCode.NO_SUCH_SHADOW_ROOT:<br/>            exception_class = NoSuchShadowRootException<br/>        elif status in ErrorCode.NO_SUCH_WINDOW:<br/>            exception_class = NoSuchWindowException<br/>        elif status in ErrorCode.STALE_ELEMENT_REFERENCE:<br/>            exception_class = StaleElementReferenceException<br/>        elif status in ErrorCode.ELEMENT_NOT_VISIBLE:<br/>            exception_class = ElementNotVisibleException<br/>        elif status in ErrorCode.INVALID_ELEMENT_STATE:<br/>            exception_class = InvalidElementStateException<br/>        elif (<br/>            status in ErrorCode.INVALID_SELECTOR<br/>            or status in ErrorCode.INVALID_XPATH_SELECTOR<br/>            or status in ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER<br/>        ):<br/>            exception_class = InvalidSelectorException<br/>        elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:<br/>            exception_class = ElementNotSelectableException<br/>        elif status in ErrorCode.ELEMENT_NOT_INTERACTABLE:<br/>            exception_class = ElementNotInteractableException<br/>        elif status in ErrorCode.INVALID_COOKIE_DOMAIN:<br/>            exception_class = InvalidCookieDomainException<br/>        elif status in ErrorCode.UNABLE_TO_SET_COOKIE:<br/>            exception_class = UnableToSetCookieException<br/>        elif status in ErrorCode.TIMEOUT:<br/>            exception_class = TimeoutException<br/>        elif status in ErrorCode.SCRIPT_TIMEOUT:<br/>            exception_class = TimeoutException<br/>        elif status in ErrorCode.UNKNOWN_ERROR:<br/>            exception_class = WebDriverException<br/>        elif status in ErrorCode.UNEXPECTED_ALERT_OPEN:<br/>            exception_class = UnexpectedAlertPresentException<br/>        elif status in ErrorCode.NO_ALERT_OPEN:<br/>            exception_class = NoAlertPresentException<br/>        elif status in ErrorCode.IME_NOT_AVAILABLE:<br/>            exception_class = ImeNotAvailableException<br/>        elif status in ErrorCode.IME_ENGINE_ACTIVATION_FAILED:<br/>            exception_class = ImeActivationFailedException<br/>        elif status in ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:<br/>            exception_class = MoveTargetOutOfBoundsException<br/>        elif status in ErrorCode.JAVASCRIPT_ERROR:<br/>            exception_class = JavascriptException<br/>        elif status in ErrorCode.SESSION_NOT_CREATED:<br/>            exception_class = SessionNotCreatedException<br/>        elif status in ErrorCode.INVALID_ARGUMENT:<br/>            exception_class = InvalidArgumentException<br/>        elif status in ErrorCode.NO_SUCH_COOKIE:<br/>            exception_class = NoSuchCookieException<br/>        elif status in ErrorCode.UNABLE_TO_CAPTURE_SCREEN:<br/>            exception_class = ScreenshotException<br/>        elif status in ErrorCode.ELEMENT_CLICK_INTERCEPTED:<br/>            exception_class = ElementClickInterceptedException<br/>        elif status in ErrorCode.INSECURE_CERTIFICATE:<br/>            exception_class = InsecureCertificateException<br/>        elif status in ErrorCode.INVALID_COORDINATES:<br/>            exception_class = InvalidCoordinatesException<br/>        elif status in ErrorCode.INVALID_SESSION_ID:<br/>            exception_class = InvalidSessionIdException<br/>        elif status in ErrorCode.UNKNOWN_METHOD:<br/>            exception_class = UnknownMethodException<br/>        else:<br/>            exception_class = WebDriverException<br/>        if not value:<br/>            value = response[&quot;value&quot;]<br/>        if isinstance(value, str):<br/>            raise exception_class(value)<br/>        if message == &quot;&quot; and &quot;message&quot; in value:<br/>            message = value[&quot;message&quot;]<br/>    <br/>        screen = None  # type: ignore[assignment]<br/>        if &quot;screen&quot; in value:<br/>            screen = value[&quot;screen&quot;]<br/>    <br/>        stacktrace = None<br/>        st_value = value.get(&quot;stackTrace&quot;) or value.get(&quot;stacktrace&quot;)<br/>        if st_value:<br/>            if isinstance(st_value, str):<br/>                stacktrace = st_value.split(&quot;\n&quot;)<br/>            else:<br/>                stacktrace = []<br/>                try:<br/>                    for frame in st_value:<br/>                        line = frame.get(&quot;lineNumber&quot;, &quot;&quot;)<br/>                        file = frame.get(&quot;fileName&quot;, &quot;&lt;anonymous&gt;&quot;)<br/>                        if line:<br/>                            file = f&quot;{file}:{line}&quot;<br/>                        meth = frame.get(&quot;methodName&quot;, &quot;&lt;anonymous&gt;&quot;)<br/>                        if &quot;className&quot; in frame:<br/>                            meth = &quot;{}.{}&quot;.format(frame[&quot;className&quot;], meth)<br/>                        msg = &quot;    at %s (%s)&quot;<br/>                        msg = msg % (meth, file)<br/>                        stacktrace.append(msg)<br/>                except TypeError:<br/>                    pass<br/>        if exception_class == UnexpectedAlertPresentException:<br/>            alert_text = None<br/>            if &quot;data&quot; in value:<br/>                alert_text = value[&quot;data&quot;].get(&quot;text&quot;)<br/>            elif &quot;alert&quot; in value:<br/>                alert_text = value[&quot;alert&quot;].get(&quot;text&quot;)<br/>            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here<br/>&gt;       raise exception_class(message, screen, stacktrace)<br/><span class="error">E       selenium.common.exceptions.NoSuchWindowException: Message: no such window: target window already closed</span><br/><span class="error">E       from unknown error: web view not found</span><br/><span class="error">E         (Session info: chrome=111.0.5563.64)</span><br/><span class="error">E       Stacktrace:</span><br/><span class="error">E       Backtrace:</span><br/><span class="error">E       	(No symbol) [0x0057DCE3]</span><br/><span class="error">E       	(No symbol) [0x005139D1]</span><br/><span class="error">E       	(No symbol) [0x00424DA8]</span><br/><span class="error">E       	(No symbol) [0x0040D0D3]</span><br/><span class="error">E       	(No symbol) [0x0046EA8B]</span><br/><span class="error">E       	(No symbol) [0x0047D093]</span><br/><span class="error">E       	(No symbol) [0x0046ACC6]</span><br/><span class="error">E       	(No symbol) [0x00446F68]</span><br/><span class="error">E       	(No symbol) [0x004480CD]</span><br/><span class="error">E       	GetHandleVerifier [0x007F3832+2506274]</span><br/><span class="error">E       	GetHandleVerifier [0x00829794+2727300]</span><br/><span class="error">E       	GetHandleVerifier [0x0082E36C+2746716]</span><br/><span class="error">E       	GetHandleVerifier [0x00626690+617600]</span><br/><span class="error">E       	(No symbol) [0x0051C712]</span><br/><span class="error">E       	(No symbol) [0x00521FF8]</span><br/><span class="error">E       	(No symbol) [0x005220DB]</span><br/><span class="error">E       	(No symbol) [0x0052C63B]</span><br/><span class="error">E       	BaseThreadInitThunk [0x769000F9+25]</span><br/><span class="error">E       	RtlGetAppContainerNamedObjectPath [0x77097BBE+286]</span><br/><span class="error">E       	RtlGetAppContainerNamedObjectPath [0x77097B8E+238]</span><br/><br/>..\..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:249: NoSuchWindowException<br/></div></td></tr></tbody></table></body></html>
+            <div class="log">self = &lt;test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues.TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues object at 0x0000020042F4D910&gt;<br/><br/>    def test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues(self):<br/>      self.driver.get(&quot;https://09384038:ARbg95917284.@meswebgsftmexicali.azure.intra.pepsico.com/Thingworx/Runtime/index.html#master=PepsiCo_Master&amp;mashup=MES_Dashboard&amp;__applyThemeName=PepsiCo%20Default%20Theme&amp;_refreshTS=1670527225809&quot;)<br/>      # 2 | waitForElementPresent | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box&#x27;]/div[3] | 11000<br/>      time.sleep(8)<br/>      # 3 | click | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_flexcontainer-200-bounding-box&#x27;]/div[2] |<br/>      self.driver.find_element(By.XPATH, &quot;//div[@id=\&#x27;root_pagemashupcontainer-6_flexcontainer-200-bounding-box\&#x27;]/div[2]&quot;).click()<br/>      time.sleep(4)<br/>      # 4 | click | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-bounding-box&#x27;]/ptcs-dropdown |<br/>      self.driver.find_element(By.XPATH, &quot;//div[@id=\&#x27;root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-bounding-box\&#x27;]/ptcs-dropdown&quot;).click()<br/>      time.sleep(3)<br/>      # 5 | click | xpath=//body[@id=&#x27;runtime&#x27;]/ptcs-list |<br/>      self.driver.find_element(By.XPATH, &quot;//body[@id=\&#x27;runtime\&#x27;]/ptcs-list&quot;).click()<br/>      # 6 | click | xpath=//div[@id=&#x27;cell_PlantModelSelectionForNavigation_RepeaterButton-12_ptcsbutton-43-bounding-box&#x27;]/ptcs-button |<br/>      self.driver.find_element(By.XPATH, &quot;//div[@id=\&#x27;cell_PlantModelSelectionForNavigation_RepeaterButton-12_ptcsbutton-43-bounding-box\&#x27;]/ptcs-button&quot;).click()<br/>      time.sleep(3)<br/>    <br/>      # Calculando cuantas filas y columnas tiene la tabla<br/>      filas=len(self.driver.find_elements(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced&quot;]/div[2]/table/tbody/tr&#x27;))<br/>      columnas=len(self.driver.find_elements(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced&quot;]/div[2]/table/tbody/tr[2]/td&#x27;))<br/>      errores=&#x27;&#x27;<br/>    <br/>      for f in range(2,filas+1) :<br/>          tubo=self.driver.find_element(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced&quot;]/div[2]/table/tbody/tr[&#x27;+str(f)+&#x27;]/td[&#x27;+str(1)+&#x27;]&#x27;).text<br/>          errores+=&#x27;\n&#x27;+tubo+&#x27;\n&#x27;<br/>          for c in range(3,columnas+1):<br/>              # Ubicando valores de cada campo de la tabla por fila<br/>              dato=(self.driver.find_element(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced&quot;]/div[2]/table/tbody/tr[&#x27;+str(f)+&#x27;]/td[&#x27;+str(c)+&#x27;]&#x27;).text)<br/>              # Ubicando que fila es la actual<br/>              print(tubo)<br/>              # Convirtiendo el texto de la tabla en flotantes para poderlo comparar con un valor numerico<br/>              try:<br/>                  dato=float(dato)<br/>              except ValueError:<br/>                  dato=dato+&quot;.0&quot;<br/>                  dato=float(dato)<br/>    <br/>              print(c,&quot; &quot;, dato)<br/>              # Comparando valores con los estandares para cada campo<br/>              if c == 3:<br/>                  if dato&gt;0:<br/>                      errores+=f&#x27;El Set Point del tubo {tubo} esta en 0 o menos \n&#x27;<br/>              elif c==4 :<br/>                  if dato&gt;0:<br/>                      errores+=f&#x27;El Name Plate del tubo {tubo} esta en 0 o menos \n&#x27;<br/>              elif c==5 :<br/>                  if dato&gt;0:<br/>                      errores+=f&#x27;El NE esta del tubo {tubo} esta en 0 o menos \n&#x27;<br/>              elif c==6 :<br/>                  if dato&lt;20:<br/>                      errores+=f&#x27;El D esta del tubo {tubo} esta en 20 o mas \n&#x27;<br/>              elif c==7 :<br/>                  if dato&gt;0:<br/>                      errores+=f&#x27;El T esta del tubo {tubo} esta en 0 o menos \n&#x27;<br/>              elif c==8 :<br/>                  if dato&gt;0 and dato&lt;10:<br/>                      errores+=f&#x27;El W esta del tubo {tubo} esta en 0 o mas de 10% \n&#x27;<br/>    <br/>    <br/>      # Comprobar si hay errores<br/>&gt;     assert len(errores)&lt;10, &#x27;\n&#x27;+errores<br/><span class="error">E     AssertionError: </span><br/><span class="error">E       </span><br/><span class="error">E       PC1PKG09</span><br/><span class="error">E       El Set Point del tubo PC1PKG09 esta en 0 o menos </span><br/><span class="error">E       El Name Plate del tubo PC1PKG09 esta en 0 o menos </span><br/><span class="error">E       El NE esta del tubo PC1PKG09 esta en 0 o menos </span><br/><span class="error">E       El D esta del tubo PC1PKG09 esta en 20 o mas </span><br/><span class="error">E       El T esta del tubo PC1PKG09 esta en 0 o menos </span><br/><span class="error">E       El W esta del tubo PC1PKG09 esta en 0 o mas de 10% </span><br/><span class="error">E       </span><br/><span class="error">E       PC1PKG10</span><br/><span class="error">E       El Set Point del tubo PC1PKG10 esta en 0 o menos </span><br/><span class="error">E       El Name Plate del tubo PC1PKG10 esta en 0 o menos </span><br/><span class="error">E       El NE esta del tubo PC1PKG10 esta en 0 o menos </span><br/><span class="error">E       El T esta del tubo PC1PKG10 esta en 0 o menos </span><br/><span class="error">E       </span><br/><span class="error">E       PC1PKG11</span><br/><span class="error">E       El Set Point del tubo PC1PKG11 esta en 0 o menos </span><br/><span class="error">E       El Name Plate del tubo PC1PKG11 esta en 0 o menos </span><br/><span class="error">E       El NE esta del tubo PC1PKG11 esta en 0 o menos </span><br/><span class="error">E       El T esta del tubo PC1PKG11 esta en 0 o menos </span><br/><span class="error">E       El W esta del tubo PC1PKG11 esta en 0 o mas de 10% </span><br/><span class="error">E       </span><br/><span class="error">E       PC1PKG12</span><br/><span class="error">E       El Set Point del tubo PC1PKG12 esta en 0 o menos </span><br/><span class="error">E       El Name Plate del tubo PC1PKG12 esta en 0 o menos </span><br/><span class="error">E       El NE esta del tubo PC1PKG12 esta en 0 o menos </span><br/><span class="error">E       El T esta del tubo PC1PKG12 esta en 0 o menos </span><br/><span class="error">E       </span><br/><span class="error">E       PC1PKG13</span><br/><span class="error">E       El Set Point del tubo PC1PKG13 esta en 0 o menos </span><br/><span class="error">E       El Name Plate del tubo PC1PKG13 esta en 0 o menos </span><br/><span class="error">E       El NE esta del tubo PC1PKG13 esta en 0 o menos </span><br/><span class="error">E       El T esta del tubo PC1PKG13 esta en 0 o menos </span><br/><span class="error">E       El W esta del tubo PC1PKG13 esta en 0 o mas de 10% </span><br/><span class="error">E       </span><br/><span class="error">E       PC1PKG14</span><br/><span class="error">E       El Set Point del tubo PC1PKG14 esta en 0 o menos </span><br/><span class="error">E       El Name Plate del tubo PC1PKG14 esta en 0 o menos </span><br/><span class="error">E       El NE esta del tubo PC1PKG14 esta en 0 o menos </span><br/><span class="error">E       El T esta del tubo PC1PKG14 esta en 0 o menos </span><br/><span class="error">E       </span><br/><span class="error">E       PC1PKG15</span><br/><span class="error">E       El Set Point del tubo PC1PKG15 esta en 0 o menos </span><br/><span class="error">E       El Name Plate del tubo PC1PKG15 esta en 0 o menos </span><br/><span class="error">E       El NE esta del tubo PC1PKG15 esta en 0 o menos </span><br/><span class="error">E       El T esta del tubo PC1PKG15 esta en 0 o menos </span><br/><span class="error">E       El W esta del tubo PC1PKG15 esta en 0 o mas de 10% </span><br/><span class="error">E       </span><br/><span class="error">E     assert 1696 &lt; 10</span><br/><span class="error">E      +  where 1696 = len(&#x27;\nPC1PKG09\nEl Set Point del tubo PC1PKG09 esta en 0 o menos \nEl Name Plate del tubo PC1PKG09 esta en 0 o menos \nEl...a en 0 o menos \nEl T esta del tubo PC1PKG15 esta en 0 o menos \nEl W esta del tubo PC1PKG15 esta en 0 o mas de 10% \n&#x27;)</span><br/><br/>test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues.py:78: AssertionError<br/> ------------------------------Captured stdout call------------------------------ <br/>PC1PKG09
+3   40.0
+PC1PKG09
+4   40.0
+PC1PKG09
+5   77.64
+PC1PKG09
+6   19.23
+PC1PKG09
+7   96.56
+PC1PKG09
+8   0.45
+PC1PKG09
+9   0.0
+PC1PKG09
+10   0.0
+PC1PKG10
+3   70.0
+PC1PKG10
+4   80.0
+PC1PKG10
+5   59.38
+PC1PKG10
+6   23.0
+PC1PKG10
+7   86.87
+PC1PKG10
+8   11.23
+PC1PKG10
+9   0.0
+PC1PKG10
+10   0.0
+PC1PKG11
+3   10.0
+PC1PKG11
+4   12.0
+PC1PKG11
+5   47.96
+PC1PKG11
+6   37.08
+PC1PKG11
+7   76.79
+PC1PKG11
+8   0.75
+PC1PKG11
+9   0.0
+PC1PKG11
+10   0.0
+PC1PKG12
+3   70.0
+PC1PKG12
+4   80.0
+PC1PKG12
+5   45.37
+PC1PKG12
+6   36.9
+PC1PKG12
+7   80.41
+PC1PKG12
+8   10.57
+PC1PKG12
+9   0.0
+PC1PKG12
+10   0.0
+PC1PKG13
+3   50.0
+PC1PKG13
+4   60.0
+PC1PKG13
+5   25.43
+PC1PKG13
+6   56.49
+PC1PKG13
+7   63.11
+PC1PKG13
+8   7.38
+PC1PKG13
+9   0.0
+PC1PKG13
+10   0.0
+PC1PKG14
+3   60.0
+PC1PKG14
+4   80.0
+PC1PKG14
+5   31.95
+PC1PKG14
+6   46.67
+PC1PKG14
+7   72.82
+PC1PKG14
+8   17.73
+PC1PKG14
+9   0.0
+PC1PKG14
+10   0.0
+PC1PKG15
+3   60.0
+PC1PKG15
+4   60.0
+PC1PKG15
+5   6.11
+PC1PKG15
+6   91.44
+PC1PKG15
+7   75.16
+PC1PKG15
+8   4.94
+PC1PKG15
+9   0.0
+PC1PKG15
+10   0.0
+<br/></div></td></tr></tbody></table></body></html>
