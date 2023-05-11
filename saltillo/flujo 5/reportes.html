@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>reportes.html</title>
+    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) { // eslint-disable-line no-redeclare
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function findAll(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sortColumn(elem) {
+    toggleSortStates(elem);
+    const colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    let key;
+    if (elem.classList.contains('result')) {
+        key = keyResult;
+    } else if (elem.classList.contains('links')) {
+        key = keyLink;
+    } else {
+        key = keyAlpha;
+    }
+    sortTable(elem, key(colIndex));
+}
+
+function showAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(showExtras);
+}
+
+function hideAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(hideExtras);
+}
+
+function showExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.remove('collapsed');
+    expandcollapse.classList.remove('expander');
+    expandcollapse.classList.add('collapser');
+}
+
+function hideExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.add('collapsed');
+    expandcollapse.classList.remove('collapser');
+    expandcollapse.classList.add('expander');
+}
+
+function showFilters() {
+    let visibleString = getQueryParameter('visible') || 'all';
+    visibleString = visibleString.toLowerCase();
+    const checkedItems = visibleString.split(',');
+
+    const filterItems = document.getElementsByClassName('filter');
+    for (let i = 0; i < filterItems.length; i++) {
+        filterItems[i].hidden = false;
+
+        if (visibleString != 'all') {
+            filterItems[i].checked = checkedItems.includes(filterItems[i].getAttribute('data-test-result'));
+            filterTable(filterItems[i]);
+        }
+    }
+}
+
+function addCollapse() {
+    // Add links for show/hide all
+    const resulttable = find('table#results-table');
+    const showhideall = document.createElement('p');
+    showhideall.innerHTML = '<a href="javascript:showAllExtras()">Show all details</a> / ' +
+                            '<a href="javascript:hideAllExtras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    findAll('.col-result').forEach(function(elem) {
+        const collapsed = getQueryParameter('collapsed') || 'Passed';
+        const extras = elem.parentNode.nextElementSibling;
+        const expandcollapse = document.createElement('span');
+        if (extras.classList.contains('collapsed')) {
+            expandcollapse.classList.add('expander');
+        } else if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add('collapsed');
+            expandcollapse.classList.add('expander');
+        } else {
+            expandcollapse.classList.add('collapser');
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener('click', function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains('collapsed')) {
+                showExtras(event.currentTarget);
+            } else {
+                hideExtras(event.currentTarget);
+            }
+        });
+    });
+}
+
+function getQueryParameter(name) {
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () { // eslint-disable-line no-unused-vars
+    resetSortHeaders();
+
+    addCollapse();
+
+    showFilters();
+
+    sortColumn(find('.initial-sort'));
+
+    findAll('.sortable').forEach(function(elem) {
+        elem.addEventListener('click',
+            function() {
+                sortColumn(elem);
+            }, false);
+    });
+}
+
+function sortTable(clicked, keyFunc) {
+    const rows = findAll('.results-table-row');
+    const reversed = !clicked.classList.contains('asc');
+    const sortedRows = sort(rows, keyFunc, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    const thead = document.getElementById('results-table-head');
+    document.getElementById('results-table').remove();
+    const parent = document.createElement('table');
+    parent.id = 'results-table';
+    parent.appendChild(thead);
+    sortedRows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName('BODY')[0].appendChild(parent);
+}
+
+function sort(items, keyFunc, reversed) {
+    const sortArray = items.map(function(item, i) {
+        return [keyFunc(item), i];
+    });
+
+    sortArray.sort(function(a, b) {
+        const keyA = a[0];
+        const keyB = b[0];
+
+        if (keyA == keyB) return 0;
+
+        if (reversed) {
+            return keyA < keyB ? 1 : -1;
+        } else {
+            return keyA > keyB ? 1 : -1;
+        }
+    });
+
+    return sortArray.map(function(item) {
+        const index = item[1];
+        return items[index];
+    });
+}
+
+function keyAlpha(colIndex) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[colIndex].firstChild.data.toLowerCase();
+    };
+}
+
+function keyLink(colIndex) {
+    return function(elem) {
+        const dataCell = elem.childNodes[1].childNodes[colIndex].firstChild;
+        return dataCell == null ? '' : dataCell.innerText.toLowerCase();
+    };
+}
+
+function keyResult(colIndex) {
+    return function(elem) {
+        const strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+            'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[colIndex].firstChild.data);
+    };
+}
+
+function resetSortHeaders() {
+    findAll('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    findAll('.sortable').forEach(function(elem) {
+        const icon = document.createElement('div');
+        icon.className = 'sort-icon';
+        icon.textContent = 'vvv';
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove('desc', 'active');
+        elem.classList.add('asc', 'inactive');
+    });
+}
+
+function toggleSortStates(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        resetSortHeaders();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function isAllRowsHidden(value) {
+    return value.hidden == false;
+}
+
+function filterTable(elem) { // eslint-disable-line no-unused-vars
+    const outcomeAtt = 'data-test-result';
+    const outcome = elem.getAttribute(outcomeAtt);
+    const classOutcome = outcome + ' results-table-row';
+    const outcomeRows = document.getElementsByClassName(classOutcome);
+
+    for(let i = 0; i < outcomeRows.length; i++){
+        outcomeRows[i].hidden = !elem.checked;
+    }
+
+    const rows = findAll('.results-table-row').filter(isAllRowsHidden);
+    const allRowsHidden = rows.length == 0 ? true : false;
+    const notFoundMessage = document.getElementById('not-found-message');
+    notFoundMessage.hidden = !allRowsHidden;
+}
+</script>
+    <h1>reportes.html</h1>
+    <p>Report generated on 08-May-2023 at 23:14:53 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>Packages</td>
+        <td>{"pluggy": "1.0.0", "pytest": "7.2.1"}</td></tr>
+      <tr>
+        <td>Platform</td>
+        <td>Windows-10-10.0.19044-SP0</td></tr>
+      <tr>
+        <td>Plugins</td>
+        <td>{"html": "3.2.0", "metadata": "2.0.4"}</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>3.11.1</td></tr></table>
+    <h2>Summary</h2>
+    <p>1 tests ran in 159.63 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">0 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">1 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable" col="duration">Duration</th>
+          <th class="sortable links" col="links">Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">test_tUC02_M_TC02_PC01_DP_EquipmentStatusDashboard.py::TestTC02MPC04DPEntitySelectionleftslider::test_tC02MPC04DPEntitySelectionleftslider</td>
+          <td class="col-duration">159.12</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;test_tUC02_M_TC02_PC01_DP_EquipmentStatusDashboard.TestTC02MPC04DPEntitySelectionleftslider object at 0x0000021916A3DB50&gt;<br/><br/>    def test_tC02MPC04DPEntitySelectionleftslider(self):<br/>      # Test name: TC02_M_PC04_DP_Entity Selection left slider<br/>      # 1 | open | https://09384038:ARbg95917284.@meswebgsftmexicali.azure.intra.pepsico.com/Thingworx/Runtime/index.html#master=PepsiCo_Master&amp;mashup=MES_Dashboard&amp;__applyThemeName=PepsiCo%20Default%20Theme&amp;_refreshTS=1670527225809 |<br/>      self.driver.get(LIGAPRINCIPAL)<br/>      # 2 | waitForElementPresent | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box&#x27;]/div[3] | 11000<br/>      # WebDriverWait(self.driver, 100).until(expected_conditions.presence_of_element_located((By.XPATH, &quot;//div[@id=\&#x27;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box\&#x27;]/div[3]&quot;)))<br/>      time.sleep(25)<br/>      # 3 | click | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_flexcontainer-200-bounding-box&#x27;]/div[2] |<br/>      self.driver.find_element(By.XPATH, &quot;//div[@id=\&#x27;root_pagemashupcontainer-6_flexcontainer-200-bounding-box\&#x27;]/div[2]&quot;).click()<br/>      time.sleep(7)<br/>      # 4 | click | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-bounding-box&#x27;]/ptcs-dropdown |<br/>      self.driver.find_element(By.XPATH, &quot;/html[1]/body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[4]/ptcs-dropdown[1]&quot;).click()<br/>      time.sleep(7)<br/>      # 5 | click | xpath=//body[@id=&#x27;runtime&#x27;]/ptcs-list |<br/>      jsPathPotato=&#x27;document.querySelector(&quot;#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc&quot;).shadowRoot.querySelector(&quot;#chunker &gt; div &gt; div &gt; ptcs-list-item:nth-child(1) &gt; ptcs-div&quot;)&#x27;<br/>      self.driver.execute_script(f&quot;return {jsPathPotato}&quot;).click()<br/>      # 7 | assertElementPresent | id=root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100 |<br/>      time.sleep(8)<br/>      # 6 | click | xpath=//div[@id=&#x27;cell_PlantModelSelectionForNavigation_RepeaterButton-12_ptcsbutton-43-bounding-box&#x27;]/ptcs-button |<br/>      self.driver.find_element(By.XPATH, &quot;/html[1]/body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/ptcs-button[1]&quot;).click()<br/>      time.sleep(5)<br/>      # 10 | assertElementPresent | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_flexcontainer-4-bounding-box&#x27;]/div |<br/>      # click en el dropdown de dash boards del navbar<br/>      self.driver.find_element(By.XPATH,&#x27;/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div[2]/div/div/div/div/div/ul/li[4]/table/tbody/tr/td/div/a&#x27;).click()<br/>      time.sleep(5)<br/>      # ----------------------<br/>      # 11 click en equipment status li<br/>      self.driver.find_element(By.XPATH,&#x27;/html/body/ul[2]/li[1]/table/tbody/tr/td/div/a&#x27;).click()<br/>      time.sleep(15)<br/>    <br/>    <br/>      # 12 defino una variable que contiene los mensajes de error<br/>      errores=&quot;\n  &quot;<br/>    <br/>      # 13 recorro la tabla en busca del equipo que no esta en funcionamiento (ROJO)<br/>      tablePath=&#x27;//*[@id=&quot;root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced&quot;]/div[2]/table/tbody&#x27;<br/>      filas=self.driver.find_elements(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced&quot;]/div[2]/table/tbody/tr&#x27;)<br/>      columnas=self.driver.find_elements(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced&quot;]/div[2]/table/tbody/tr[2]/td&#x27;)<br/>      filas=len(filas)<br/>      columnas=len(columnas)<br/>      for f in range(2,filas+1):<br/>        departamento=self.driver.find_element(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced&quot;]/div[2]/table/tbody/tr[&#x27;+str(f)+&#x27;]/td[1]&#x27;).text<br/>        linea=self.driver.find_element(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced&quot;]/div[2]/table/tbody/tr[&#x27;+str(f)+&#x27;]/td[2]&#x27;).text<br/>        tubo=self.driver.find_element(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced&quot;]/div[2]/table/tbody/tr[&#x27;+str(f)+&#x27;]/td[3]&#x27;).text<br/>    <br/>        for c in range(1, columnas+1):<br/>          equipo=self.driver.find_element(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced&quot;]/div[2]/table/tbody/tr[&#x27;+str(f)+&#x27;]/td[&#x27;+str(c)+&#x27;]&#x27;)<br/>          nombreEquipo=self.driver.find_element(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced&quot;]/div[2]/table/tbody/tr[&#x27;+str(f)+&#x27;]/td[&#x27;+str(c)+&#x27;]&#x27;).text<br/>          equipoClase=equipo.get_attribute(&quot;class&quot;)<br/>          if equipoClase==&quot;twdhtmlxcell cell_style2&quot; and len(nombreEquipo)&gt;3:<br/>              errores+=f&#x27;El equipo {nombreEquipo} del departamento {departamento} linea: {linea} tubo: {tubo} esta fallando \n&#x27;<br/>    <br/>&gt;     assert len(errores)&lt;5,  errores<br/><span class="error">E     AssertionError: </span><br/><span class="error">E         El equipo Ishida TSC-RVS-120 del departamento Tortilla Chips linea: TC1 tubo: DT3000PKG01 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Tortilla Chips linea: TC1 tubo: DT3000PKG02 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Tortilla Chips linea: TC1 tubo: DT3000PKG03 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Tortilla Chips linea: TC1 tubo: DT3000PKG04 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Tortilla Chips linea: TC1 tubo: DT3000PKG05 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Tortilla Chips linea: TC1 tubo: DT3000PKG06 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Fried Corn Puffs linea: FCP1 tubo: ChurrumaisPKG17 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Fried Corn Puffs linea: FCP1 tubo: ChurrumaisPKG18 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Fried Corn Puffs linea: FCP1 tubo: ChurrumaisPKG19 esta fallando </span><br/><span class="error">E       El equipo Omega 328 scale del departamento PopCorn linea: POP1 tubo: PLCEPKG31 esta fallando </span><br/><span class="error">E       El equipo ROBAG 3CI TX RDJ 320 del departamento PopCorn linea: POP1 tubo: PLCEPKG31 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento PopCorn linea: POP1 tubo: PLCEPKG31 esta fallando </span><br/><span class="error">E       El equipo Ishida ACP-501 del departamento PopCorn linea: POP1 tubo: PLCEPKG31 esta fallando </span><br/><span class="error">E       El equipo Omega 328 scale del departamento PopCorn linea: POP1 tubo: PLCEPKG32 esta fallando </span><br/><span class="error">E       El equipo ROBAG 3CI TX RDJ 320 del departamento PopCorn linea: POP1 tubo: PLCEPKG32 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento PopCorn linea: POP1 tubo: PLCEPKG32 esta fallando </span><br/><span class="error">E       El equipo Ishida ACP-501 del departamento PopCorn linea: POP1 tubo: PLCEPKG32 esta fallando </span><br/><span class="error">E       El equipo Omega 328 scale del departamento PopCorn linea: POP1 tubo: PLCEPKG33 esta fallando </span><br/><span class="error">E       El equipo ROBAG 3CI TX RDJ 320 del departamento PopCorn linea: POP1 tubo: PLCEPKG33 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento PopCorn linea: POP1 tubo: PLCEPKG33 esta fallando </span><br/><span class="error">E       El equipo Ishida ACP-501 del departamento PopCorn linea: POP1 tubo: PLCEPKG33 esta fallando </span><br/><span class="error">E       El equipo Omega 328 scale del departamento PopCorn linea: POP1 tubo: PLCEPKG34 esta fallando </span><br/><span class="error">E       El equipo ROBAG 3CI TX RDJ 320 del departamento PopCorn linea: POP1 tubo: PLCEPKG34 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento PopCorn linea: POP1 tubo: PLCEPKG34 esta fallando </span><br/><span class="error">E       El equipo Ishida ACP-501 del departamento PopCorn linea: POP1 tubo: PLCEPKG34 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG44 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG44 esta fallando </span><br/><span class="error">E       El equipo Ishida CCW-RV-218B-2D/30-SS-ITPS del departamento Potato Chips linea: PC1 tubo: PC50PKG45 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG45 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG45 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG46 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG47 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG47 esta fallando </span><br/><span class="error">E       El equipo Ishida CCW-RV-218B-2D/30-SS-ITPS del departamento Potato Chips linea: PC1 tubo: PC50PKG48 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG48 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG48 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG49 esta fallando </span><br/><span class="error">E       El equipo Ishida CCW-RV-218B-2D/30-SS-ITPS del departamento Potato Chips linea: PC1 tubo: PC50PKG50 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG50 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG50 esta fallando </span><br/><span class="error">E       El equipo Ishida CCW-RV-218B-2D/30-SS-ITPS del departamento Potato Chips linea: PC1 tubo: PC50PKG51 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG51 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG51 esta fallando </span><br/><span class="error">E       El equipo Ishida ACP-501 del departamento Potato Chips linea: PC1 tubo: PC50PKG51 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG52 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG53 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG53 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG54 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG54 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG55 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG56 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG56 esta fallando </span><br/><span class="error">E       El equipo Ishida CCW-RV-218B-2D/30-SS-ITPS del departamento Potato Chips linea: PC1 tubo: PC50PKG57 esta fallando </span><br/><span class="error">E       El equipo INSPIRA A-RD33-SB22-LWR-ABA del departamento Potato Chips linea: PC1 tubo: PC50PKG57 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Potato Chips linea: PC1 tubo: PC50PKG57 esta fallando </span><br/><span class="error">E       El equipo CCW-RV-218W del departamento Continuous Kettle Fried linea: CKF2 tubo: CKF2PKG62 esta fallando </span><br/><span class="error">E       El equipo Ishida Atlas 204 del departamento Continuous Kettle Fried linea: CKF2 tubo: CKF2PKG62 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Continuous Kettle Fried linea: CKF2 tubo: CKF2PKG62 esta fallando </span><br/><span class="error">E       El equipo Ishida ACP-501 del departamento Continuous Kettle Fried linea: CKF2 tubo: CKF2PKG62 esta fallando </span><br/><span class="error">E       El equipo CCW-RV-218W del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG68 esta fallando </span><br/><span class="error">E       El equipo Ishida Atlas 204 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG68 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG68 esta fallando </span><br/><span class="error">E       El equipo CCW-RV-218W del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG69 esta fallando </span><br/><span class="error">E       El equipo Ishida Atlas 204 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG69 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG69 esta fallando </span><br/><span class="error">E       El equipo Ishida ACP-502 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG69 esta fallando </span><br/><span class="error">E       El equipo CCW-RV-218W del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG70 esta fallando </span><br/><span class="error">E       El equipo Ishida Atlas 204 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG70 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG70 esta fallando </span><br/><span class="error">E       El equipo Ishida ACP-502 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG70 esta fallando </span><br/><span class="error">E       El equipo CCW-RV-218W del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG71 esta fallando </span><br/><span class="error">E       El equipo Ishida Atlas 204 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG71 esta fallando </span><br/><span class="error">E       El equipo Ishida TSC-RVS-120 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG71 esta fallando </span><br/><span class="error">E       </span><br/><span class="error">E     assert 7608 &lt; 5</span><br/><span class="error">E      +  where 7608 = len(&#x27;\n  El equipo Ishida TSC-RVS-120 del departamento Tortilla Chips linea: TC1 tubo: DT3000PKG01 esta fallando \nEl equi...lando \nEl equipo Ishida TSC-RVS-120 del departamento Kettle Potato Chips linea: KPC1 tubo: KPC1PKG71 esta fallando \n&#x27;)</span><br/><br/>test_tUC02_M_TC02_PC01_DP_EquipmentStatusDashboard.py:77: AssertionError<br/></div></td></tr></tbody></table></body></html>

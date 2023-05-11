@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>reportes.html</title>
+    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) { // eslint-disable-line no-redeclare
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function findAll(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sortColumn(elem) {
+    toggleSortStates(elem);
+    const colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    let key;
+    if (elem.classList.contains('result')) {
+        key = keyResult;
+    } else if (elem.classList.contains('links')) {
+        key = keyLink;
+    } else {
+        key = keyAlpha;
+    }
+    sortTable(elem, key(colIndex));
+}
+
+function showAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(showExtras);
+}
+
+function hideAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(hideExtras);
+}
+
+function showExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.remove('collapsed');
+    expandcollapse.classList.remove('expander');
+    expandcollapse.classList.add('collapser');
+}
+
+function hideExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.add('collapsed');
+    expandcollapse.classList.remove('collapser');
+    expandcollapse.classList.add('expander');
+}
+
+function showFilters() {
+    let visibleString = getQueryParameter('visible') || 'all';
+    visibleString = visibleString.toLowerCase();
+    const checkedItems = visibleString.split(',');
+
+    const filterItems = document.getElementsByClassName('filter');
+    for (let i = 0; i < filterItems.length; i++) {
+        filterItems[i].hidden = false;
+
+        if (visibleString != 'all') {
+            filterItems[i].checked = checkedItems.includes(filterItems[i].getAttribute('data-test-result'));
+            filterTable(filterItems[i]);
+        }
+    }
+}
+
+function addCollapse() {
+    // Add links for show/hide all
+    const resulttable = find('table#results-table');
+    const showhideall = document.createElement('p');
+    showhideall.innerHTML = '<a href="javascript:showAllExtras()">Show all details</a> / ' +
+                            '<a href="javascript:hideAllExtras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    findAll('.col-result').forEach(function(elem) {
+        const collapsed = getQueryParameter('collapsed') || 'Passed';
+        const extras = elem.parentNode.nextElementSibling;
+        const expandcollapse = document.createElement('span');
+        if (extras.classList.contains('collapsed')) {
+            expandcollapse.classList.add('expander');
+        } else if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add('collapsed');
+            expandcollapse.classList.add('expander');
+        } else {
+            expandcollapse.classList.add('collapser');
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener('click', function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains('collapsed')) {
+                showExtras(event.currentTarget);
+            } else {
+                hideExtras(event.currentTarget);
+            }
+        });
+    });
+}
+
+function getQueryParameter(name) {
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () { // eslint-disable-line no-unused-vars
+    resetSortHeaders();
+
+    addCollapse();
+
+    showFilters();
+
+    sortColumn(find('.initial-sort'));
+
+    findAll('.sortable').forEach(function(elem) {
+        elem.addEventListener('click',
+            function() {
+                sortColumn(elem);
+            }, false);
+    });
+}
+
+function sortTable(clicked, keyFunc) {
+    const rows = findAll('.results-table-row');
+    const reversed = !clicked.classList.contains('asc');
+    const sortedRows = sort(rows, keyFunc, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    const thead = document.getElementById('results-table-head');
+    document.getElementById('results-table').remove();
+    const parent = document.createElement('table');
+    parent.id = 'results-table';
+    parent.appendChild(thead);
+    sortedRows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName('BODY')[0].appendChild(parent);
+}
+
+function sort(items, keyFunc, reversed) {
+    const sortArray = items.map(function(item, i) {
+        return [keyFunc(item), i];
+    });
+
+    sortArray.sort(function(a, b) {
+        const keyA = a[0];
+        const keyB = b[0];
+
+        if (keyA == keyB) return 0;
+
+        if (reversed) {
+            return keyA < keyB ? 1 : -1;
+        } else {
+            return keyA > keyB ? 1 : -1;
+        }
+    });
+
+    return sortArray.map(function(item) {
+        const index = item[1];
+        return items[index];
+    });
+}
+
+function keyAlpha(colIndex) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[colIndex].firstChild.data.toLowerCase();
+    };
+}
+
+function keyLink(colIndex) {
+    return function(elem) {
+        const dataCell = elem.childNodes[1].childNodes[colIndex].firstChild;
+        return dataCell == null ? '' : dataCell.innerText.toLowerCase();
+    };
+}
+
+function keyResult(colIndex) {
+    return function(elem) {
+        const strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+            'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[colIndex].firstChild.data);
+    };
+}
+
+function resetSortHeaders() {
+    findAll('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    findAll('.sortable').forEach(function(elem) {
+        const icon = document.createElement('div');
+        icon.className = 'sort-icon';
+        icon.textContent = 'vvv';
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove('desc', 'active');
+        elem.classList.add('asc', 'inactive');
+    });
+}
+
+function toggleSortStates(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        resetSortHeaders();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function isAllRowsHidden(value) {
+    return value.hidden == false;
+}
+
+function filterTable(elem) { // eslint-disable-line no-unused-vars
+    const outcomeAtt = 'data-test-result';
+    const outcome = elem.getAttribute(outcomeAtt);
+    const classOutcome = outcome + ' results-table-row';
+    const outcomeRows = document.getElementsByClassName(classOutcome);
+
+    for(let i = 0; i < outcomeRows.length; i++){
+        outcomeRows[i].hidden = !elem.checked;
+    }
+
+    const rows = findAll('.results-table-row').filter(isAllRowsHidden);
+    const allRowsHidden = rows.length == 0 ? true : false;
+    const notFoundMessage = document.getElementById('not-found-message');
+    notFoundMessage.hidden = !allRowsHidden;
+}
+</script>
+    <h1>reportes.html</h1>
+    <p>Report generated on 27-Apr-2023 at 12:43:20 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>Packages</td>
+        <td>{"pluggy": "1.0.0", "pytest": "7.2.1"}</td></tr>
+      <tr>
+        <td>Platform</td>
+        <td>Windows-10-10.0.19044-SP0</td></tr>
+      <tr>
+        <td>Plugins</td>
+        <td>{"html": "3.2.0", "metadata": "2.0.4"}</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>3.11.1</td></tr></table>
+    <h2>Summary</h2>
+    <p>1 tests ran in 116.42 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">0 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">1 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable" col="duration">Duration</th>
+          <th class="sortable links" col="links">Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues.py::TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues::test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues</td>
+          <td class="col-duration">115.59</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues.TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues object at 0x0000018190E412D0&gt;<br/><br/>    def test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues(self):<br/>      self.driver.get(LIGAPRINCIPAL)<br/>      # 2 | waitForElementPresent | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box&#x27;]/div[3] | 11000<br/>      time.sleep(10)<br/>      # 3 | click | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_flexcontainer-200-bounding-box&#x27;]/div[2] |<br/>      self.driver.find_element(By.XPATH, &quot;//div[@id=\&#x27;root_pagemashupcontainer-6_flexcontainer-200-bounding-box\&#x27;]/div[2]&quot;).click()<br/>      time.sleep(4)<br/>      # 4 | click | xpath=//div[@id=&#x27;root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-bounding-box&#x27;]/ptcs-dropdown |<br/>      self.driver.find_element(By.XPATH, &quot;//div[@id=\&#x27;root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-bounding-box\&#x27;]/ptcs-dropdown&quot;).click()<br/>      time.sleep(5)<br/>      # 5 | click | xpath=//body[@id=&#x27;runtime&#x27;]/ptcs-list |<br/>      jsPathPotato=&#x27;document.querySelector(&quot;#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc&quot;).shadowRoot.querySelector(&quot;#chunker &gt; div &gt; div &gt; ptcs-list-item:nth-child(1)&quot;)&#x27;<br/>      self.driver.execute_script(f&quot;return {jsPathPotato}&quot;).click()<br/>      time.sleep(5)<br/>      # 6 | click | xpath=//div[@id=&#x27;cell_PlantModelSelectionForNavigation_RepeaterButton-12_ptcsbutton-43-bounding-box&#x27;]/ptcs-button |<br/>      self.driver.find_element(By.XPATH, &quot;/html[1]/body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/ptcs-button[1]&quot;).click()<br/>      time.sleep(10)<br/>    <br/>      # Calculando cuantas filas y columnas tiene la tabla<br/>      filas=len(self.driver.find_elements(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced&quot;]/div[2]/table/tbody/tr&#x27;))<br/>      columnas=len(self.driver.find_elements(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced&quot;]/div[2]/table/tbody/tr[2]/td&#x27;))<br/>      errores=&#x27;&#x27;<br/>    <br/>      for f in range(2,filas+1) :<br/>          tubo=self.driver.find_element(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced&quot;]/div[2]/table/tbody/tr[&#x27;+str(f)+&#x27;]/td[&#x27;+str(1)+&#x27;]&#x27;).text<br/>          errores+=&#x27;\n&#x27;+tubo+&#x27;\n&#x27;<br/>          for c in range(3,columnas-1):<br/>              # Ubicando valores de cada campo de la tabla por fila<br/>              dato=(self.driver.find_element(By.XPATH,&#x27;//*[@id=&quot;root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced&quot;]/div[2]/table/tbody/tr[&#x27;+str(f)+&#x27;]/td[&#x27;+str(c)+&#x27;]&#x27;).text)<br/>              # Ubicando que fila es la actual<br/>              print(tubo)<br/>              # Convirtiendo el texto de la tabla en flotantes para poderlo comparar con un valor numerico<br/>              try:<br/>                  dato=float(dato)<br/>              except ValueError:<br/>                  dato=dato+&quot;.0&quot;<br/>                  dato=float(dato)<br/>              print(dato)<br/>              # Comparando valores con los estandares para cada campo<br/>              if c == 3:<br/>                  if dato&lt;=0:<br/>                      errores+=f&#x27;El Set Point del tubo {tubo} esta en 0 o menos \n VALOR ACTUAL: {dato} \n&#x27;<br/>              elif c==4 :<br/>                  if dato&lt;=0:<br/>                      errores+=f&#x27;El Name Plate del tubo {tubo} esta en 0 o menos \n VALOR ACTUAL: {dato} \n&#x27;<br/>              elif c==5 :<br/>                  if dato&lt;=0:<br/>                      errores+=f&#x27;El NE esta del tubo {tubo} esta en 0 o menos  \n VALOR ACTUAL: {dato} \n &#x27;<br/>              elif c==6 :<br/>                  if dato&gt;20:<br/>                      errores+=f&#x27;El D esta del tubo {tubo} esta en 20 o mas \n VALOR ACTUAL: {dato} \n&#x27;<br/>              elif c==7 :<br/>                  if dato&lt;=0:<br/>                      errores+=f&#x27;El T esta del tubo {tubo} esta en 0 o menos \n VALOR ACTUAL: {dato} \n&#x27;<br/>              elif c==8 :<br/>                  if dato&lt;=0 and dato&lt;10:<br/>                      errores+=f&#x27;El W esta del tubo {tubo} esta en 0 o mas de 10% \n VALOR ACTUAL: {dato} \n&#x27;<br/>    <br/>    <br/>      # Comprobar si hay errores<br/>      if len(errores)&gt;10:<br/>          name=convertTo.createWord(errores, &#x27;TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues&#x27;)<br/>          convertTo.convertToPdf(name)<br/>&gt;         assert len(errores)&lt;10, &#x27;\n&#x27;+errores<br/><span class="error">E         AssertionError: </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG01</span><br/><span class="error">E           El D esta del tubo PC1PKGG01 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 21.2 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG02</span><br/><span class="error">E           El D esta del tubo PC1PKGG02 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 40.65 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG03</span><br/><span class="error">E           El NE esta del tubo PC1PKGG03 esta en 0 o menos  </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E            El D esta del tubo PC1PKGG03 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 100.0 </span><br/><span class="error">E           El T esta del tubo PC1PKGG03 esta en 0 o menos </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           El W esta del tubo PC1PKGG03 esta en 0 o mas de 10% </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG04</span><br/><span class="error">E           El D esta del tubo PC1PKGG04 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 34.47 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG05</span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG06</span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG07</span><br/><span class="error">E           El D esta del tubo PC1PKGG07 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 43.39 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG08</span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG09</span><br/><span class="error">E           El D esta del tubo PC1PKGG09 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 34.41 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG10</span><br/><span class="error">E           El NE esta del tubo PC1PKGG10 esta en 0 o menos  </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E            El D esta del tubo PC1PKGG10 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 100.0 </span><br/><span class="error">E           El T esta del tubo PC1PKGG10 esta en 0 o menos </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           El W esta del tubo PC1PKGG10 esta en 0 o mas de 10% </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG11</span><br/><span class="error">E           El W esta del tubo PC1PKGG11 esta en 0 o mas de 10% </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG12</span><br/><span class="error">E           El D esta del tubo PC1PKGG12 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 29.63 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG13</span><br/><span class="error">E           El D esta del tubo PC1PKGG13 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 85.64 </span><br/><span class="error">E           El W esta del tubo PC1PKGG13 esta en 0 o mas de 10% </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG14</span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG15</span><br/><span class="error">E           El D esta del tubo PC1PKGG15 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 93.7 </span><br/><span class="error">E           El W esta del tubo PC1PKGG15 esta en 0 o mas de 10% </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG16</span><br/><span class="error">E           El NE esta del tubo PC1PKGG16 esta en 0 o menos  </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E            El D esta del tubo PC1PKGG16 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 100.0 </span><br/><span class="error">E           El T esta del tubo PC1PKGG16 esta en 0 o menos </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           El W esta del tubo PC1PKGG16 esta en 0 o mas de 10% </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG17</span><br/><span class="error">E           El D esta del tubo PC1PKGG17 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 29.46 </span><br/><span class="error">E           El W esta del tubo PC1PKGG17 esta en 0 o mas de 10% </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           </span><br/><span class="error">E           PC1PKGG18</span><br/><span class="error">E           El D esta del tubo PC1PKGG18 esta en 20 o mas </span><br/><span class="error">E            VALOR ACTUAL: 44.02 </span><br/><span class="error">E           El W esta del tubo PC1PKGG18 esta en 0 o mas de 10% </span><br/><span class="error">E            VALOR ACTUAL: 0.0 </span><br/><span class="error">E           </span><br/><span class="error">E         assert 2094 &lt; 10</span><br/><span class="error">E          +  where 2094 = len(&#x27;\nPC1PKGG01\nEl D esta del tubo PC1PKGG01 esta en 20 o mas \n VALOR ACTUAL: 21.2 \n\nPC1PKGG02\nEl D esta del tubo PC... esta en 20 o mas \n VALOR ACTUAL: 44.02 \nEl W esta del tubo PC1PKGG18 esta en 0 o mas de 10% \n VALOR ACTUAL: 0.0 \n&#x27;)</span><br/><br/>..\..\guadalajara\flujo 1\test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues.py:96: AssertionError<br/> ------------------------------Captured stdout call------------------------------ <br/>PC1PKGG01
+100.0
+PC1PKGG01
+100.0
+PC1PKGG01
+73.3
+PC1PKGG01
+21.2
+PC1PKGG01
+94.35
+PC1PKGG01
+1.41
+PC1PKGG02
+75.0
+PC1PKGG02
+70.0
+PC1PKGG02
+55.42
+PC1PKGG02
+40.65
+PC1PKGG02
+94.94
+PC1PKGG02
+1.64
+PC1PKGG03
+100.0
+PC1PKGG03
+100.0
+PC1PKGG03
+0.0
+PC1PKGG03
+100.0
+PC1PKGG03
+0.0
+PC1PKGG03
+0.0
+PC1PKGG04
+100.0
+PC1PKGG04
+100.0
+PC1PKGG04
+60.26
+PC1PKGG04
+34.47
+PC1PKGG04
+93.34
+PC1PKGG04
+1.48
+PC1PKGG05
+100.0
+PC1PKGG05
+100.0
+PC1PKGG05
+81.57
+PC1PKGG05
+14.41
+PC1PKGG05
+96.07
+PC1PKGG05
+0.8
+PC1PKGG06
+70.0
+PC1PKGG06
+70.0
+PC1PKGG06
+83.4
+PC1PKGG06
+11.64
+PC1PKGG06
+95.22
+PC1PKGG06
+0.87
+PC1PKGG07
+100.0
+PC1PKGG07
+100.0
+PC1PKGG07
+55.3
+PC1PKGG07
+43.39
+PC1PKGG07
+98.73
+PC1PKGG07
+1.06
+PC1PKGG08
+100.0
+PC1PKGG08
+100.0
+PC1PKGG08
+92.13
+PC1PKGG08
+5.47
+PC1PKGG08
+98.15
+PC1PKGG08
+0.7
+PC1PKGG09
+100.0
+PC1PKGG09
+100.0
+PC1PKGG09
+62.99
+PC1PKGG09
+34.41
+PC1PKGG09
+97.5
+PC1PKGG09
+1.49
+PC1PKGG10
+100.0
+PC1PKGG10
+100.0
+PC1PKGG10
+0.0
+PC1PKGG10
+100.0
+PC1PKGG10
+0.0
+PC1PKGG10
+0.0
+PC1PKGG11
+100.0
+PC1PKGG11
+100.0
+PC1PKGG11
+88.79
+PC1PKGG11
+9.36
+PC1PKGG11
+97.96
+PC1PKGG11
+0.0
+PC1PKGG12
+70.0
+PC1PKGG12
+70.0
+PC1PKGG12
+67.27
+PC1PKGG12
+29.63
+PC1PKGG12
+97.51
+PC1PKGG12
+1.97
+PC1PKGG13
+100.0
+PC1PKGG13
+100.0
+PC1PKGG13
+12.23
+PC1PKGG13
+85.64
+PC1PKGG13
+85.18
+PC1PKGG13
+0.0
+PC1PKGG14
+115.0
+PC1PKGG14
+100.0
+PC1PKGG14
+76.75
+PC1PKGG14
+20.0
+PC1PKGG14
+96.92
+PC1PKGG14
+1.01
+PC1PKGG15
+100.0
+PC1PKGG15
+100.0
+PC1PKGG15
+4.47
+PC1PKGG15
+93.7
+PC1PKGG15
+70.97
+PC1PKGG15
+0.0
+PC1PKGG16
+100.0
+PC1PKGG16
+100.0
+PC1PKGG16
+0.0
+PC1PKGG16
+100.0
+PC1PKGG16
+0.0
+PC1PKGG16
+0.0
+PC1PKGG17
+100.0
+PC1PKGG17
+100.0
+PC1PKGG17
+68.96
+PC1PKGG17
+29.46
+PC1PKGG17
+97.76
+PC1PKGG17
+0.0
+PC1PKGG18
+100.0
+PC1PKGG18
+100.0
+PC1PKGG18
+54.55
+PC1PKGG18
+44.02
+PC1PKGG18
+97.44
+PC1PKGG18
+0.0
+<br/></div></td></tr></tbody></table></body></html>
