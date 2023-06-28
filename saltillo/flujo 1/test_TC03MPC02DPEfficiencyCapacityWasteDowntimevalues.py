@@ -24,7 +24,7 @@ from utilities.ligasPlanta import LIGAPRINCIPAL
 
 class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome()
+    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
     self.vars = {}
   
   def teardown_method(self, method):
@@ -33,7 +33,7 @@ class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
   def test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues(self): 
     self.driver.get(LIGAPRINCIPAL)
     # 2 | waitForElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box']/div[3] | 11000
-    time.sleep(20)
+    time.sleep(25)
     # 3 | click | xpath=//div[@id='root_pagemashupcontainer-6_flexcontainer-200-bounding-box']/div[2] | 
     self.driver.find_element(By.XPATH, "//div[@id=\'root_pagemashupcontainer-6_flexcontainer-200-bounding-box\']/div[2]").click()
     time.sleep(7)

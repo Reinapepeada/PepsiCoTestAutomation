@@ -16,7 +16,7 @@ from utilities.ligasPlanta import LIGASSRS
 
 class TestTC02MPC04DPEntitySelectionleftslider():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome('chromedriver.exe')
+    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
     self.vars = {}
   
   def teardown_method(self, method):

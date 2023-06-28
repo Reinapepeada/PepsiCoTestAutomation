@@ -17,7 +17,7 @@ from utilities.ligasPlanta import LIGAPRINCIPAL
 
 class TestTC03MPC01DPEfficiencyCapacityWasteandDowntimevalues():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome()
+    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
     self.vars = {}
   
   def teardown_method(self, method):

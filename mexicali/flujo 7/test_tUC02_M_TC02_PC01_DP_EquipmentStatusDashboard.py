@@ -16,7 +16,7 @@ from utilities.ligasPlanta import LIGAPRINCIPAL
 
 class TestTC02MPC04DPEntitySelectionleftslider():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome('chromedriver.exe')
+    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
     self.vars = {}
   
   def teardown_method(self, method):
@@ -38,33 +38,29 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     self.driver.find_element(By.XPATH, '//*[@id="root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100"]').click()
     time.sleep(1)
 
-    # 5 click en el separtamento de tortillas
-    tortillasJSPath='document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(2)")'
+    # 5 click en el departamento de tortillas
+    tortillasJSPath='document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(2) > ptcs-div")'
     self.driver.execute_script(f'return {tortillasJSPath}').click()
 
-    # 6 click en el area de packaging
-    self.driver.find_element(By.XPATH, '//body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/ptcs-button[1]').click()
+    # 6 click en el area de procesing
+    self.driver.find_element(By.XPATH, '/html[1]/body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[3]/div[1]/div[1]/ptcs-button[1]').click()
     time.sleep(7)
 
     # 7 click en opcion de KPIs de eficiencia
-    # self.driver.find_element(By.XPATH, '//body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[3]/div[1]/div[1]/ptcs-button[1]')
+    # self.driver.find_element(By.XPATH, '/html[1]/body[1]/div[12]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/ptcs-button[1]').click()
     kpiNEJSPath='document.querySelector("#root_pagemashupcontainer-6_ptcsbutton-24")'
     self.driver.execute_script(f'return {kpiNEJSPath}').click()
-    time.sleep(2)
+    time.sleep(6)
 
     # 8 click en NE
-    # jspathNE='document.querySelector("#root_pagemashupcontainer-6_navigationfunction-211-popup_ptcsbutton-1-bounding-box")'
-    # self.driver.execute_script(f'return {jspathNE}').click()
-    self.driver.find_element(By.XPATH, '//body[1]/div[9]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/ptcs-button[1]').click()
+    jspathNE='document.querySelector("#root_pagemashupcontainer-6_navigationfunction-211-popup_ptcsbutton-1")'
+    self.driver.execute_script(f'return {jspathNE}').click()
+    # self.driver.find_element(By.XPATH, '//body[1]/div[9]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/ptcs-button[1]').click()
     time.sleep(7) 
 
     # 9 click en opcion de KPIs de tiempo
     self.driver.find_element(By.XPATH,'//body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[3]/div[1]/div[3]/ptcs-button[1]').click()
     time.sleep(5)
-
-    # click en opcion de custom date range
-    # customDateRangeJSPath='document.querySelector("#root_pagemashupcontainer-6_navigationfunction-213-popup_ptcstabset-126").shadowRoot.querySelector("ptcs-tabs > ptcs-tab:nth-child(6) > ptcs-label")'
-    # self.driver.execute_script(f'return {customDateRangeJSPath}').click()
 
     # 10 click en el boton de pepsi weeks
     botonpepsiWeeksJSPath='document.querySelector("#root_pagemashupcontainer-6_navigationfunction-213-popup_ptcstabset-126").shadowRoot.querySelector("ptcs-tabs > ptcs-tab:nth-child(4) > ptcs-label")'
@@ -74,7 +70,7 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     # 11 click en el dropdown de pepsi weeks
     dropdownPepsiWeeksJSPath='document.querySelector("#root_pagemashupcontainer-6_navigationfunction-213-popup_ptcsdropdown-135").shadowRoot.querySelector("#select")'
     self.driver.execute_script(f'return {dropdownPepsiWeeksJSPath}').click()
-    time.sleep(2)
+    time.sleep(5)
 
     # 12 click en la ultima opcion de la lista
 
@@ -94,24 +90,24 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     except:
       pass
     ###index de la ultima opcion de la lista
-    elementoLista-=2
+    elementoLista-=4
     ## click en la ultima opcion de la lista
     lastOption=f'document.querySelector("#root_pagemashupcontainer-6_navigationfunction-213-popup_ptcsdropdown-135-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child({elementoLista}) > ptcs-div")'
     self.driver.execute_script(f'return {lastOption}').click()
     ## variable que almacena el periodo de la pepsi week seleccionada para despues ser escrita en el csv
     periodo=int(opcion)-1
-    time.sleep(3)
+    time.sleep(6)
 
     # 12.1 click en la pepsiweek seleccionada
     ## variable que cuenta cuantas pepsi weeks hay en la lista
-    pepsiWeeksCount=len(self.driver.find_elements(By.XPATH, '//body[1]/div[10]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ptcs-tab-set[1]/ptcs-mb-container[4]/div[1]/div[1]/div[2]/div[1]/div[1]/div[3]/div[2]/div[2]/table[1]/tbody[1]/tr'))
-    pepsiWeekSelected=pepsiWeeksCount-2
+    pepsiWeeksCount=len(self.driver.find_elements(By.XPATH, '/html[1]/body[1]/div[15]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ptcs-tab-set[1]/ptcs-mb-container[4]/div[1]/div[1]/div[2]/div[1]/div[1]/div[3]/div[2]/div[2]/table[1]/tbody[1]/tr'))
+    pepsiWeekSelected=pepsiWeeksCount-3
     ## variable que almacena el path de la pepsi week seleccionada  
-    # pepsiweekSelectedXPATH=f'//body[1]/div[10]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ptcs-tab-set[1]/ptcs-mb-container[4]/div[1]/div[1]/div[2]/div[1]/div[1]/div[3]/div[2]/div[2]/table[1]/tbody[1]/tr[{pepsiWeeksCount-1}]]'
-    pepsiweekSelectedJSPATH=f'document.querySelector("#root_pagemashupcontainer-6_navigationfunction-213-popup_gridadvanced-137-grid-advanced > div.objbox > table > tbody > tr:nth-child({pepsiWeeksCount-1})")'
+    pepsiweekSelectedXPATH=f'/html[1]/body[1]/div[15]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ptcs-tab-set[1]/ptcs-mb-container[4]/div[1]/div[1]/div[2]/div[1]/div[1]/div[3]/div[2]/div[2]/table[1]/tbody[1]/tr[{pepsiWeeksCount-1}]/td[1]'
+    # pepsiweekSelectedJSPATH=f'document.querySelector("#root_pagemashupcontainer-6_navigationfunction-213-popup_gridadvanced-137-grid-advanced > div.objbox > table > tbody > tr:nth-child({pepsiWeeksCount-1})")'
     ## click en la pepsi week seleccionada
-    self.driver.execute_script(f'return {pepsiweekSelectedJSPATH}').click()
-    time.sleep(2)
+    # self.driver.execute_script(f'return {pepsiweekSelectedJSPATH}').click()
+    time.sleep(6)
     # 13 click en el boton de submit para aplicar los cambios
     submitJSPath='document.querySelector("#root_pagemashupcontainer-6_navigationfunction-213-popup_ptcsbutton-66")'
     self.driver.execute_script(f'return {submitJSPath}').click()

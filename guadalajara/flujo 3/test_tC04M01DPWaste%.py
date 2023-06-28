@@ -16,7 +16,7 @@ from utilities.ligasPlanta import LIGAPRINCIPAL
 
 class TestTC04M01DPDowntimetimes():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome()
+    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
     self.vars = {}
   
   def teardown_method(self, method):
@@ -38,7 +38,7 @@ class TestTC04M01DPDowntimetimes():
     time.sleep(10)
 
     #driver.execute_script(f'return {over_underBt}').click()
-    over = self.driver.find_element(By.XPATH, '//body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/ptcs-tab-set[1]/ptcs-mb-container[9]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[23]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[3]/table[1]/tbody[1]/tr[1]/td[2]')
+    over = self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div/div[2]/div/div/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div/div/ptcs-tab-set/ptcs-mb-container[9]/div/div/div/div[3]/div/div[2]/div/div/div[23]/div/div/div/div[2]/div[1]/div/div/div[2]/div/div[1]/div[3]/table/tbody/tr/td[2]')
     over.click()
 
     time.sleep(10)
@@ -48,19 +48,22 @@ class TestTC04M01DPDowntimetimes():
     #hora estandar variable
     errores='\n'
     for f in range(2,filas+1) :
-      porcentWaste=0
-      print('entro al bucle')
       # Ubicando valores de cada campo de la tabla por fila   
       goodbags=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(7)+']').text
       tuboNombre = self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(1)+']').text
       totalWaste=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(6)+']').text
-      if int(goodbags)>0 :
-        porcentWaste=int(totalWaste)*100//int(goodbags)
-      else:
-        errores+=f" El valor de goodbags del tubo '{tuboNombre}' esta en 0 \n"
-      if porcentWaste>10:
-         errores+= f"El porcentaje de waste respecto a las good bags es mas de 10% en el tubo {tuboNombre} \n"
+      porcentWaste=0
+      #si algun valor es igual o menos que 0 avisa en el reporte
+      if float(goodbags)<=0:
+        errores+= f" No hay good Bags en el tubo {tuboNombre} \n"
       
+      elif float(goodbags)>0 and float(totalWaste)>0:
+        #si esta positivo calcula los porcentajes 
+        porcentWaste=float(totalWaste)*100//float(goodbags)
+        
+      #evalua los porcentajes
+      if porcentWaste>10 and porcentWaste!=0:
+        errores+= f" El porcentaje de Waste respecto a las good Bags es mas de 10% en el tubo {tuboNombre} \n"
     assert len(errores)<5, errores
 
 

@@ -16,7 +16,7 @@ from utilities.ligasPlanta import LIGAPRINCIPAL
 
 class TestTC04M02DPDowntimetimes():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome()
+    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
     self.vars = {}
   
   def teardown_method(self, method):
@@ -34,11 +34,11 @@ class TestTC04M02DPDowntimetimes():
     time.sleep(10)
 
     #driver.execute_script(f'return {over_underBt}').click()
-    over = self.driver.find_element(By.XPATH, '//*[@id="root_pagemashupcontainer-6_ContainedMashup-13_mashupcontainer-217_radiobuttonlist-146"]/table/tbody/tr/td[2]')
+    over = self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div/div[2]/div/div/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div/div/ptcs-tab-set/ptcs-mb-container[9]/div/div/div/div[3]/div/div[2]/div/div/div[23]/div/div/div/div[2]/div[1]/div/div/div[2]/div/div[2]/div[3]/table/tbody/tr/td[2]/span')
     over.click()
 
     time.sleep(10)
-    pathFilas='//*[@id="root_pagemashupcontainer-6_ContainedMashup-13_mashupcontainer-217_mashupcontainer-141_mashupcontainer-60_dhxgrid-99-dhxgrid"]/div[2]/table/tbody/tr'
+    pathFilas='/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div/div[2]/div/div/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div/div/ptcs-tab-set/ptcs-mb-container[9]/div/div/div/div[3]/div/div[2]/div/div/div[23]/div/div/div/div[2]/div[1]/div/div/div[1]/div/div/div/div[2]/div[1]/div/div/div/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div/div/div/div[2]/div[1]/div/div/div/div/div[2]/div[1]/div/div/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div[2]/div/div/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[2]/table/tbody/tr'
     filas=len(self.driver.find_elements(By.XPATH,pathFilas)) #'//*[@id="root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-91_mashupcontainer-94_gridadvanced-111-grid-advanced"]/div[2]/table/tbody/tr'
     time.sleep(12)
     errores='\n'
@@ -47,20 +47,20 @@ class TestTC04M02DPDowntimetimes():
       goodbags=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(7)+']').text
       tuboNombre = self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(1)+']').text
       unknownBags=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(12)+']').text
+      porcentUnknow=0
+      if float(goodbags)>0 and float(unknownBags)>0.0:
+        #convierto el el valor en absoluto
+        if unknownBags<0.0:
+          unknownBags*=-1
+        #si esta en positivo calcula el porcentaje de waste
+        porcentUnknow=float(unknownBags)*100//float(goodbags)
+      #si algun valor es igual o menos que 0 avisa en el reporte
+      elif float(goodbags)<=0:
+        errores+= f" No hay good Bags en el tubo {tuboNombre} \n"
       
-      if int(goodbags)>0 and int(unknownBags)>0:
-        porcentUnknow=int(unknownBags)*100//int(goodbags)
-      elif int(unknownBags)==0:
-        continue
-      else:
-        errores+=f" El valor de goodbags del tubo '{tuboNombre}' esta en 0 \n"
-
-
-      if porcentUnknow<0:
-        porcentUnknow*=-1
-
-      if porcentUnknow>5:
-        errores+= f" El porcentaje de unknow Bags respecto a las good Bags es mas de 5% en el tubo {tuboNombre} \n"
+      #evalua los porcentajes
+      if porcentUnknow>5 and porcentUnknow!=0:
+        errores+= f" El porcentaje de UnknowBags respecto a las good Bags es mas de 5% en el tubo {tuboNombre} \n"
     
     assert len(errores)<5, errores
 

@@ -16,7 +16,7 @@ from utilities.ligasPlanta import LIGAPRINCIPAL
 
 class TestTC02MPC04DPEntitySelectionleftslider():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome('chromedriver.exe')
+    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
     self.vars = {}
   
   def teardown_method(self, method):
@@ -41,15 +41,15 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     # 7 | assertElementPresent | id=root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100 | 
     time.sleep(8)
     # 6 | click | xpath=//div[@id='cell_PlantModelSelectionForNavigation_RepeaterButton-12_ptcsbutton-43-bounding-box']/ptcs-button | 
-    self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/ptcs-button[1]").click()
-    time.sleep(5)
+    self.driver.find_element(By.XPATH, "/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[1]/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[3]/div/div[2]/div/div/div[3]/div/div[1]/div/div[2]/div/div/div[2]/div/div[3]/div/div/ptcs-button").click()
+    time.sleep(20)
     # 10 | assertElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_flexcontainer-4-bounding-box']/div | 
     # click en el dropdown de dash boards del navbar
-    self.driver.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div[2]/div/div/div/div/div/ul/li[4]/table/tbody/tr/td/div/a').click()
-    time.sleep(5)
+    self.driver.find_element(By.XPATH,'//body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/ul[1]/li[4]/table[1]/tbody[1]/tr[1]/td[1]/div[1]').click()
+    time.sleep(4)
     # ----------------------
     # 11 click en equipment status li
-    self.driver.find_element(By.XPATH,'/html[1]/body[1]/ul[2]/li[1]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/a[1]/span[1]').click()
+    self.driver.find_element(By.XPATH,'/html/body/ul[2]/li[2]/table/tbody/tr/td/div/a').click()
     time.sleep(15)
     
 
@@ -57,21 +57,23 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     errores="\n  "
 
     # 13 recorro la tabla en busca del equipo que no esta en funcionamiento (ROJO)
-    tablePath='//*[@id="root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced"]/div[2]/table/tbody'
-    filas=self.driver.find_elements(By.XPATH,'//*[@id="root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced"]/div[2]/table/tbody/tr')
-    columnas=self.driver.find_elements(By.XPATH,'//*[@id="root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced"]/div[2]/table/tbody/tr[2]/td')
+    print('paso 13')
+    tablePath='/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div/div[3]/div[2]/div[2]/table/tbody'
+    filas=self.driver.find_elements(By.XPATH,tablePath+'/tr')
+    columnas=self.driver.find_elements(By.XPATH,tablePath+'/tr[2]/td')
     filas=len(filas)
     columnas=len(columnas)
+    print(filas,columnas," filas-columnas")
     for f in range(2,filas+1):
-      departamento=self.driver.find_element(By.XPATH,'//*[@id="root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced"]/div[2]/table/tbody/tr['+str(f)+']/td[1]').text
-      linea=self.driver.find_element(By.XPATH,'//*[@id="root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced"]/div[2]/table/tbody/tr['+str(f)+']/td[2]').text
-      tubo=self.driver.find_element(By.XPATH,'//*[@id="root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced"]/div[2]/table/tbody/tr['+str(f)+']/td[3]').text
-      
+      departamento=self.driver.find_element(By.XPATH,tablePath+'/tr['+str(f)+']/td[1]').text
+      linea=self.driver.find_element(By.XPATH,tablePath+'/tr['+str(f)+']/td[2]').text
+      tubo=self.driver.find_element(By.XPATH,tablePath+'/tr['+str(f)+']/td[3]').text
+      print(departamento,linea,tubo," departamento linea tubo")
       for c in range(1, columnas+1):
-        equipo=self.driver.find_element(By.XPATH,'//*[@id="root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced"]/div[2]/table/tbody/tr['+str(f)+']/td['+str(c)+']')
-        nombreEquipo=self.driver.find_element(By.XPATH,'//*[@id="root_pagemashupcontainer-6_mashupcontainer-142_gridadvanced-4-grid-advanced"]/div[2]/table/tbody/tr['+str(f)+']/td['+str(c)+']').text
+        equipo=self.driver.find_element(By.XPATH,tablePath+'/tr['+str(f)+']/td['+str(c)+']')
+        nombreEquipo=self.driver.find_element(By.XPATH,tablePath+'/tr['+str(f)+']/td['+str(c)+']').text
         equipoClase=equipo.get_attribute("class")
-        if equipoClase=="twdhtmlxcell cell_style2" and len(nombreEquipo)>3:
+        if equipoClase=="twdhtmlxcell cell_style1" and len(nombreEquipo)>3:
             errores+=f'El equipo {nombreEquipo} del departamento {departamento} linea: {linea} tubo: {tubo} esta fallando \n'
 
     assert len(errores)<5,  errores
