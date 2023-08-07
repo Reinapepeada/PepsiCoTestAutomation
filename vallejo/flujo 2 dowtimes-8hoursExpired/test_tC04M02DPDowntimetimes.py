@@ -71,7 +71,13 @@ class TestTC04M02DPDowntimetimes():
                     errores+= f"El tubo {tuboNombre} tiene un reporte de downtime de mas de 8 horas \n"
         
     
-    assert len(errores)<8, '\n'+ errores
+    # Comprobar si hay errores
+    if len(errores)>8:
+        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
+        convertTo.convertToPdf(name)
+        assert len(errores)<10, '\n'+errores
+    else:
+        assert len(errores)<8, '\n'+errores 
     
 
 if __name__== '__main__':

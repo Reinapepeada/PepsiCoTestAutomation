@@ -93,7 +93,14 @@ class TestTUC04_M_TC05_PC1_DP_Wastetab():
         errores+= f" la diferencia de CHW-MHW es mayor al 10% de MHW = {toleranciaMaxima} en el tubo {tuboNombre} \n"
         print(f"toleranciaMaxima {toleranciaMaxima} chw_mhw {chw_mhw}")
 
-    assert len(errores)<5, errores
+    # Comprobar si hay errores
+    if len(errores)>5:
+        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
+        convertTo.convertToPdf(name)
+        assert len(errores)<5, '\n'+errores
+    else:
+        assert len(errores)<5, '\n'+errores 
+
 
 if __name__=='__main__':
   pytest.main()

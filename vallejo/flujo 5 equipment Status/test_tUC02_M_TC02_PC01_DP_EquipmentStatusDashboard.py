@@ -10,13 +10,19 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import sys,os
+
+p = os.path.abspath('../..')
+sys.path.insert(1, p)
+from externalLibraries import convertTo
+import sys,os
 p = os.path.abspath('..')
 sys.path.insert(1, p)
 from utilities.ligasPlanta import LIGAPRINCIPAL
 
+
 class TestTC02MPC04DPEntitySelectionleftslider():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
+    self.driver = webdriver.Chrome()
     self.vars = {}
   
   def teardown_method(self, method):
@@ -50,33 +56,69 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     # ----------------------
     # 11 click en equipment status li
     self.driver.find_element(By.XPATH,'/html/body/ul[2]/li[3]/table/tbody/tr/td/div/a').click()
-    time.sleep(15)
+    time.sleep(35)
     
 
-    # 12 defino una variable que contiene los mensajes de error
-    errores="\n  "
+    # 12 defino matriz de errores
+    errores=[["Linea","Tubo","Equipo","Tipo de Equipo"]]
 
     # 13 recorro la tabla en busca del equipo que no esta en funcionamiento (ROJO)
     TABLEPATH="/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[2]/div[1]/div/div/div/div[3]/div[2]/div[2]/table/tbody"
+    TABLEPATHENUNC='/html[1]/body[1]/div[3]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[2]/div[1]/table[1]/tbody[1]'
     filas=self.driver.find_elements(By.XPATH,TABLEPATH+'/tr')
     columnas=self.driver.find_elements(By.XPATH,TABLEPATH+'/tr[2]/td')
     filas=len(filas)
     columnas=len(columnas)
+
+    # contador de equipos que no estan en funcionamiento
+    equiposNoFuncionando=0
+    # contador de equipos que funcionan correctamente
+    equiposFuncionando=0
   
+    equipoClasemsg=""
     for f in range(2,filas+1):
+      #bandera que indica si el equipo no esta en funcionamiento
+      equipoNoFuncionando=False
+      # obtengo los datos de la fila
       departamento=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td[1]').text
       linea=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td[2]').text
       tubo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td[3]').text
-      
+      # recorro las columnas de la fila
+      print("departamento: "+departamento+" linea: "+linea+" tubo: "+tubo)
       for c in range(1, columnas+1):
+        # obtengo el nombre del equipo y su clase
         equipo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td['+str(c)+']')
         nombreEquipo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td['+str(c)+']').text
         equipoClase=equipo.get_attribute("class")
+        equipoClasemsg+=equipoClase
+        # tipoEquipo=self.driver.find_element(By.XPATH,TABLEPATHENUNC+"/tr[2]/td["+str(c)+"]/div[1]").text
+        # evalua cual es la clase del css para determinar de que color es la celda del equipo, si es rojo es porque no esta funcionando
+        # esta establecido que ese nombre e clase es el de los equipos que no estan funcionando
+        # OJO hay celdas fantasmas que estan en rojo pero que no corresponden a nada y no tienen texto por eso la comprobacion de que si tienen un len>3
         if equipoClase=="twdhtmlxcell cell_style3" and len(nombreEquipo)>3:
-            errores+=f'El equipo {nombreEquipo} del departamento {departamento} linea: {linea} tubo: {tubo} esta fallando \n'
+            # errores+=f'El equipo {nombreEquipo} del departamento {departamento} linea: {linea} tubo: {tubo} esta fallando \n'
+            errores.append([linea,tubo,nombreEquipo])
+            equipoNoFuncionando=True
+        if c>20:
+          # si el equipo no esta funcionando aumento el contador de equipos que no funcionan      
+          if equipoNoFuncionando:
+            equiposNoFuncionando+=1
+          else:
+            # si el equipo esta funcionando aumento el contador de equipos que funcionan
+            equiposFuncionando+=1
+            
+      equipoClasemsg+="\n"
 
-    assert len(errores)<5,  errores
-    
+    print(equipoClasemsg)
+
+    # Comprobar si hay errores
+    if len(errores)>5:
+        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues',equiposNoFuncionando,equiposFuncionando)
+        convertTo.convertToPdf(name)
+        assert len(errores)<5, '\n'+errores
+    else:
+        assert len(errores)<5, '\n'+errores
+
 
 if __name__=='__main__':
   pytest.main()

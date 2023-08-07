@@ -71,7 +71,7 @@ class TestTC04M01DPDowntimetimes():
       thick=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(6)+']').text
       overCount=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(11)+']').text
       underCount=self.driver.find_element(By.XPATH,pathFilas+'['+str(f)+']/td['+str(12)+']').text
-      print(float(airLeak)+float(doubleBag)+float(flat)+float(thick)+float(overCount)+float(underCount)+"  "+totalWaste+"  "+tuboNombre)
+      print(float(airLeak), float(doubleBag),float(flat),float(thick),float(overCount),float(underCount),"  "+totalWaste+"  "+tuboNombre)
 
       if float(airLeak)+float(doubleBag)+float(flat)+float(thick)+float(overCount)+float(underCount) != float(totalWaste):
         errores+= f" la suma de airleak,doublebag,flat,thick,over,under no es igual al totalwaste en el tubo {tuboNombre} en el dashboard de over/under \n"
@@ -102,7 +102,14 @@ class TestTC04M01DPDowntimetimes():
     #   if sumaTotalCHW!=actualTotalWaste:
     #     errores+= f" la suma de airleak,doublebag,flat,thick y el chw waste no es igual al totalwaste en el tubo {tuboNombre} \n"
 
-    assert len(errores)<5, errores
+    # Comprobar si hay errores
+    if len(errores)>5:
+        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
+        convertTo.convertToPdf(name)
+        assert len(errores)<5, '\n'+errores
+    else:
+        assert len(errores)<5, '\n'+errores 
+
 
          
 

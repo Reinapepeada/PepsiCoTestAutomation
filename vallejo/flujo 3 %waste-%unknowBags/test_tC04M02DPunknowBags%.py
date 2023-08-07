@@ -50,7 +50,7 @@ class TestTC04M02DPDowntimetimes():
       porcentUnknow=0
       if float(goodbags)>0 and float(unknownBags)>0.0:
         #convierto el el valor en absoluto
-        if unknownBags<0.0:
+        if float(unknownBags)<0.0:
           unknownBags*=-1
         #si esta en positivo calcula el porcentaje de waste
         porcentUnknow=float(unknownBags)*100//float(goodbags)
@@ -62,7 +62,13 @@ class TestTC04M02DPDowntimetimes():
       if porcentUnknow>5 and porcentUnknow!=0:
         errores+= f" El porcentaje de UnknowBags respecto a las good Bags es mas de 5% en el tubo {tuboNombre} \n"
     
-    assert len(errores)<5, errores
+    # Comprobar si hay errores
+    if len(errores)>5:
+        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
+        convertTo.convertToPdf(name)
+        assert len(errores)<5, '\n'+errores
+    else:
+        assert len(errores)<5, '\n'+errores 
 
 
 if __name__== '__main__':

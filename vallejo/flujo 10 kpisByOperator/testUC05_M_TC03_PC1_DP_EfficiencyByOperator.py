@@ -136,7 +136,14 @@ class TestTUC05_M_TC03_PC1_DP_EfficiencyByOperator():
       errores+="\n  - El total de W no coincide con la suma de los valores de la columna W en by Operator"
     
 
-    assert len(errores)<5,  errores
+    # Comprobar si hay errores
+    if len(errores)>5:
+        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
+        convertTo.convertToPdf(name)
+        assert len(errores)<5, '\n'+errores
+    else:
+        assert len(errores)<5, '\n'+errores 
+
     
 
 if __name__=='__main__':

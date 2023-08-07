@@ -116,7 +116,14 @@ class TestUC05_M_TC03_PC1_DP_Wastetab():
         errores+= f"Las goodbags{goodBagsTubo[f-2]} de {tuboNombre} coinciden con las totalBags{totalBags} de la tabla de weight\n"
       
 
-    assert len(errores)<5, errores
+    # Comprobar si hay errores
+    if len(errores)>5:
+        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
+        convertTo.convertToPdf(name)
+        assert len(errores)<5, '\n'+errores
+    else:
+        assert len(errores)<5, '\n'+errores 
+
 
 if __name__=='__main__':
   pytest.main()

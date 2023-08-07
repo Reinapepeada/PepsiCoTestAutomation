@@ -12,7 +12,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 import math
-
+p = os.path.abspath('../..')
+sys.path.insert(1, p)
+from externalLibraries import convertTo
 p = os.path.abspath('..')
 sys.path.insert(1, p)
 from utilities.ligasPlanta import LIGAPRINCIPAL
@@ -84,7 +86,14 @@ class TestUC05_M_TC03_PC1_DP_Wastetab():
         errores+= f"las totalBags del tubo {tuboNombre} es mas de 1000 ({totalBags}) y alguno de los valores de over {over} y under {under} son 0 \n"
       
 
-    assert len(errores)<5, errores
+    # Comprobar si hay errores
+    if len(errores)>5:
+        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
+        convertTo.convertToPdf(name)
+        assert len(errores)<5, '\n'+errores
+    else:
+        assert len(errores)<5, '\n'+errores 
+
 
 if __name__=='__main__':
   pytest.main()

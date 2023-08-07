@@ -22,13 +22,26 @@ from utilities.ligasPlanta import LIGAPRINCIPAL
 
 class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--disable-logging")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--log-level=3")
+    chrome_options.add_argument("--disable-popup-blocking")
+    #Mantiene abierta la ventana
+    chrome_options.add_experimental_option("detach", True)
+    #Oculta mensaje "Chrome is being controlled by automated software” de la ventana
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--ignore-certificate-errors')
+    self.driver = webdriver.Chrome(options=chrome_options)
     self.vars = {}
   
   def teardown_method(self, method):
     self.driver.quit()
   
   def test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues(self):
+    failedTubes=0
+    goodTubes=0
     self.driver.get(LIGAPRINCIPAL)
     # 2 | waitForElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box']/div[3] | 11000
     time.sleep(25)
@@ -45,7 +58,7 @@ class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
     time.sleep(5)
     # 6 | click | xpath=//div[@id='cell_PlantModelSelectionForNavigation_RepeaterButton-12_ptcsbutton-43-bounding-box']/ptcs-button | 
     self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/ptcs-button[1]").click()
-    time.sleep(10)
+    time.sleep(15)
 
     # Calculando cuantas filas y columnas tiene la tabla
     filas=len(self.driver.find_elements(By.XPATH,'//*[@id="root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced"]/div[2]/table/tbody/tr'))
@@ -54,6 +67,7 @@ class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
 
     for f in range(2,filas+1) :
         tubo=self.driver.find_element(By.XPATH,'//*[@id="root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced"]/div[2]/table/tbody/tr['+str(f)+']/td['+str(1)+']').text
+        bandera=False
         errores+='\n'+tubo+'\n'
         for c in range(3,columnas-1):
             # Ubicando valores de cada campo de la tabla por fila
@@ -71,28 +85,47 @@ class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
             if c == 3:
                 if dato<=0:
                     errores+=f'El Set Point del tubo {tubo} esta en 0 o menos \n VALOR ACTUAL: {dato} \n'
+                    bandera=True
             elif c==4 :
                 if dato<=0:
                     errores+=f'El Name Plate del tubo {tubo} esta en 0 o menos \n VALOR ACTUAL: {dato} \n'
+                    bandera=True
             elif c==5 :
                 if dato<=0:
                     errores+=f'El NE esta del tubo {tubo} esta en 0 o menos  \n VALOR ACTUAL: {dato} \n '
+                    bandera=True
             elif c==6 :
                 if dato>20: 
                     errores+=f'El D esta del tubo {tubo} esta en 20 o mas \n VALOR ACTUAL: {dato} \n'
+                    bandera=True
             elif c==7 :
                 if dato<=0:
                     errores+=f'El T esta del tubo {tubo} esta en 0 o menos \n VALOR ACTUAL: {dato} \n'
+                    bandera=True
+
             elif c==8 :
                 if dato<=0 and dato<10:
                     errores+=f'El W esta del tubo {tubo} esta en 0 o mas de 10% \n VALOR ACTUAL: {dato} \n'
-        
+                    bandera=True
+        if bandera is True:
+            failedTubes+=1
+        else:
+            goodTubes+=1
+            
+
+    # expando la pantalla para poder ver la tabla completa
+    self.driver.maximize_window()
+    time.sleep(5)
+
 
     # Comprobar si hay errores
     if len(errores)>10:
-        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
+        name='EfficiencyCapacityWasteandDowntimevalues'
+        convertTo.createWord(errores, name, failedTubes, goodTubes)
         convertTo.convertToPdf(name)
-        assert len(errores)<10, '\n'+errores
-    else:
-        assert len(errores)<10, '\n'+errores 
+        # hago una captura de pantalla para poder registrar el error
+        self.driver.save_screenshot('reportPDF/EfficiencyCapacityWasteandDowntimevalues.png')
+        
+    assert len(errores)<10, '\n'+errores
+   
 
