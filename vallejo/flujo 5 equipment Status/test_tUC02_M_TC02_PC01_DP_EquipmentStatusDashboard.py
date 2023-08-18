@@ -34,7 +34,7 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     self.driver.get(LIGAPRINCIPAL)
     # 2 | waitForElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box']/div[3] | 11000
     # WebDriverWait(self.driver, 100).until(expected_conditions.presence_of_element_located((By.XPATH, "//div[@id=\'root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box\']/div[3]")))
-    time.sleep(25)
+    time.sleep(20)
     # 3 | click | xpath=//div[@id='root_pagemashupcontainer-6_flexcontainer-200-bounding-box']/div[2] | 
     self.driver.find_element(By.XPATH, "//div[@id=\'root_pagemashupcontainer-6_flexcontainer-200-bounding-box\']/div[2]").click()
     time.sleep(7)
@@ -48,7 +48,7 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     time.sleep(8)
         # 6 | click | xpath=//div[@id='cell_PlantModelSelectionForNavigation_RepeaterButton-12_ptcsbutton-43-bounding-box']/ptcs-button | 
     self.driver.find_element(By.XPATH, "/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[1]/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[3]/div/div[2]/div/div/div[3]/div/div[1]/div/div[2]/div/div/div[2]/div/div[3]/div/div/ptcs-button").click()
-    time.sleep(20)
+    time.sleep(15)
     # 10 | assertElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_flexcontainer-4-bounding-box']/div | 
     # click en el dropdown de dash boards del navbar
     self.driver.find_element(By.XPATH,'//body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/ul[1]/li[4]/table[1]/tbody[1]/tr[1]/td[1]/div[1]').click()
@@ -60,22 +60,23 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     
 
     # 12 defino matriz de errores
-    errores=[["Linea","Tubo","Equipo","Tipo de Equipo"]]
+    errores=[["Linea","Tubo","Equipo"]]
 
     # 13 recorro la tabla en busca del equipo que no esta en funcionamiento (ROJO)
     TABLEPATH="/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[2]/div[1]/div/div/div/div[3]/div[2]/div[2]/table/tbody"
-    TABLEPATHENUNC='/html[1]/body[1]/div[3]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[2]/div[1]/table[1]/tbody[1]'
     filas=self.driver.find_elements(By.XPATH,TABLEPATH+'/tr')
     columnas=self.driver.find_elements(By.XPATH,TABLEPATH+'/tr[2]/td')
+    print(filas)
     filas=len(filas)
     columnas=len(columnas)
-
-    # contador de equipos que no estan en funcionamiento
-    equiposNoFuncionando=0
-    # contador de equipos que funcionan correctamente
-    equiposFuncionando=0
+    print(filas,columnas)
+    # matriz de equipos funcionando y no funcionando
+    equiposM=[['Equipos Funcionando','Equipos No Funcionando', 'Total de Equipos'],[0,0,0]]
   
-    equipoClasemsg=""
+    # Declaro la matriz de tipos de equipos
+    tiposEquipo=[["Equipo","Conectados","Desconectados"],["Weigher",0,0],["BagMaker",0,0],["Inspector",0,0],["CheckWeigher",0,0],["CasePacker",0,0]]
+    
+    # recorro las filas de la tabla
     for f in range(2,filas+1):
       #bandera que indica si el equipo no esta en funcionamiento
       equipoNoFuncionando=False
@@ -85,39 +86,78 @@ class TestTC02MPC04DPEntitySelectionleftslider():
       tubo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td[3]').text
       # recorro las columnas de la fila
       print("departamento: "+departamento+" linea: "+linea+" tubo: "+tubo)
-      for c in range(1, columnas+1):
+      for c in range(20, columnas+1):
         # obtengo el nombre del equipo y su clase
         equipo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td['+str(c)+']')
         nombreEquipo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td['+str(c)+']').text
         equipoClase=equipo.get_attribute("class")
-        equipoClasemsg+=equipoClase
-        # tipoEquipo=self.driver.find_element(By.XPATH,TABLEPATHENUNC+"/tr[2]/td["+str(c)+"]/div[1]").text
         # evalua cual es la clase del css para determinar de que color es la celda del equipo, si es rojo es porque no esta funcionando
         # esta establecido que ese nombre e clase es el de los equipos que no estan funcionando
         # OJO hay celdas fantasmas que estan en rojo pero que no corresponden a nada y no tienen texto por eso la comprobacion de que si tienen un len>3
-        if equipoClase=="twdhtmlxcell cell_style3" and len(nombreEquipo)>3:
-            # errores+=f'El equipo {nombreEquipo} del departamento {departamento} linea: {linea} tubo: {tubo} esta fallando \n'
-            errores.append([linea,tubo,nombreEquipo])
-            equipoNoFuncionando=True
-        if c>20:
+        if "twdhtmlxcell cell_style3" in equipoClase and len(nombreEquipo)>3:
+          equipoNoFuncionando=True
+          errores.append([linea,tubo,nombreEquipo])
+        
+        if len(nombreEquipo)>3:
           # si el equipo no esta funcionando aumento el contador de equipos que no funcionan      
           if equipoNoFuncionando:
-            equiposNoFuncionando+=1
+            equiposM[1][1]+=1  
           else:
             # si el equipo esta funcionando aumento el contador de equipos que funcionan
-            equiposFuncionando+=1
+            equiposM[1][0]+=1
+          
+          #contar los equipos conectados y desconectados por tipo de equipo
+          # Aumentando el contador de Weigher
+          if equipoNoFuncionando and c==21:
+            tiposEquipo[1][2]+=1
+          elif c==21:
+            tiposEquipo[1][1]+=1
+          
+          # Aumentando el contador de BagMaker
+          if equipoNoFuncionando and c==22:
+            tiposEquipo[2][2]+=1
+          elif c==22:
+            tiposEquipo[2][1]+=1
+          
+          # Aumentando el contador de Inspector
+          if equipoNoFuncionando and c==23:
+            tiposEquipo[3][2]+=1
+          elif c==23:
+            tiposEquipo[3][1]+=1
+          
+          # Aumentando el contador de CheckWeigher
+          if equipoNoFuncionando and c==24:
+            tiposEquipo[4][2]+=1
+          elif c==24:
+            tiposEquipo[4][1]+=1
+          
+          # Aumentando el contador de CasePacker
+          if equipoNoFuncionando and c==25:
+            tiposEquipo[5][2]+=1
+          elif c==25:
+            tiposEquipo[5][1]+=1
             
-      equipoClasemsg+="\n"
 
-    print(equipoClasemsg)
+    # sumo los equipos
+    equiposM[1][2]=equiposM[1][0]+equiposM[1][1]
+
 
     # Comprobar si hay errores
     if len(errores)>5:
-        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues',equiposNoFuncionando,equiposFuncionando)
-        convertTo.convertToPdf(name)
-        assert len(errores)<5, '\n'+errores
+        # name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues',equiposNoFuncionando,equiposFuncionando)
+        # convertTo.convertToPdf(name)
+        # buscar el path de la carpeta donde se encuentra el archivo
+
+        path = os.path.dirname(os.path.abspath(__file__))
+
+        # creo el path del archivo
+
+        path = path + "\\tables\TC03MPC02DPEfficien.xlsx"
+        
+        convertTo.createExcel(equiposM,errores,tiposEquipo,path)
+        assert len(errores)<1, errores
     else:
-        assert len(errores)<5, '\n'+errores
+        assert len(errores)<1, errores
 
 
 if __name__=='__main__':
