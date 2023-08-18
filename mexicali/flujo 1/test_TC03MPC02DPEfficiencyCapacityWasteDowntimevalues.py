@@ -1,19 +1,11 @@
 import pytest
-import docx 
-from docx import Document
-from docx.shared import Inches
-from docx.shared import Pt
-from docx.shared import Cm
-import comtypes.client
-from docxtpl import DocxTemplate, InlineImage
 import os,sys
-import win32com.client
-p = os.path.abspath('../..')
-sys.path.insert(1, p)
-from externalLibraries import convertTo
+# p = os.path.abspath('../..')
+# sys.path.insert(1, p)
+# from .. import convertTo
 import math
 import time
-import json
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import sys,os
@@ -24,7 +16,17 @@ from utilities.ligasPlanta import LIGAPRINCIPAL
 
 class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome('../../externalLibraries/chromedriver.exe')
+    ChromeoOptions = webdriver.ChromeOptions()
+    ChromeoOptions.add_argument('--ignore-certificate-errors')
+    ChromeoOptions.add_argument('--ignore-ssl-errors')
+    ChromeoOptions.add_argument("--start-maximized")
+    ChromeoOptions.add_argument("--disable-extensions")
+    ChromeoOptions.add_argument("--disable-gpu")
+    ChromeoOptions.add_argument("--disable-dev-shm-usage")
+    ChromeoOptions.add_argument("--no-sandbox")
+
+
+    self.driver = webdriver.Chrome(options=ChromeoOptions)
     self.vars = {}
   
   def teardown_method(self, method):
@@ -33,21 +35,20 @@ class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
   def test_TC03MPC02DPEfficiencyCapacityWasteDowntimevalues(self): 
     self.driver.get(LIGAPRINCIPAL)
     # 2 | waitForElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box']/div[3] | 11000
-    time.sleep(20)
+    time.sleep(8)
     # 3 | click | xpath=//div[@id='root_pagemashupcontainer-6_flexcontainer-200-bounding-box']/div[2] | 
     self.driver.find_element(By.XPATH, "//div[@id=\'root_pagemashupcontainer-6_flexcontainer-200-bounding-box\']/div[2]").click()
-    time.sleep(7)
+    time.sleep(2)
     # 4 | click | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-bounding-box']/ptcs-dropdown | 
     self.driver.find_element(By.XPATH, "//div[@id=\'root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-bounding-box\']/ptcs-dropdown").click()
-    time.sleep(7)
+    time.sleep(2)
     # 5 | click | xpath=//body[@id='runtime']/ptcs-list | 
     jsPathPotato='document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(1)")'
     self.driver.execute_script(f"return {jsPathPotato}").click()
-    time.sleep(5)
+    time.sleep(2)
     # 6 | click | xpath=//div[@id='cell_PlantModelSelectionForNavigation_RepeaterButton-12_ptcsbutton-43-bounding-box']/ptcs-button | 
     self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/ptcs-button[1]").click()
-    time.sleep(10)
-
+    time.sleep(9)
     # Calculando cuantas filas y columnas tiene la tabla
     filas=len(self.driver.find_elements(By.XPATH,'//*[@id="root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced"]/div[2]/table/tbody/tr'))
     columnas=len(self.driver.find_elements(By.XPATH,'//*[@id="root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-grid-advanced"]/div[2]/table/tbody/tr[2]/td'))
@@ -91,8 +92,8 @@ class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
 
     # Comprobar si hay errores
     if len(errores)>10:
-        name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
-        convertTo.convertToPdf(name)
+        # name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues')
+        # convertTo.convertToPdf(name)
         assert len(errores)<10, '\n'+errores
     else:
         assert len(errores)<10, '\n'+errores 
