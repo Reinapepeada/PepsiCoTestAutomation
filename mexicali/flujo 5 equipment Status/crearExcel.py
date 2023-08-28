@@ -1,72 +1,4 @@
-from docx import Document
-import time
-from docxtpl import DocxTemplate, InlineImage
-import os
-import win32com.client
-from docxtpl import DocxTemplate, InlineImage
-
-
-
-
-def createWord(data,documentName,failTubes,goodTubes):
-
-    #tomando el nombre del documento
-    
-    
-    # Create a new document from template
-    templateDoc=DocxTemplate("documentation/template2.docx")
-    #variable que guarda la fecha
-    fecha=time.strftime("%d/%m/%Y")
-    #variable que guarda la hora
-    hora=time.strftime("%H:%M:%S")
-    #variable que guarda el nombre del test
-    test="Test : "+documentName
-
-    dataFormateada=""
-    for i in range(len(data)):
-        for j in range(len(data[i])):
-            dataFormateada+='\t'+data[i][j]+"\t"
-            
-        dataFormateada+="\n-----------------------------------------------------------------------------------------------------------------\n"
-
-    data=dataFormateada
-    
-    # Create a context for rendering
-    context = {
-        'fecha': fecha,
-        'hora': hora,
-        'test': test,
-        'data': data,
-        'failTubes': failTubes,
-        'goodTubes': goodTubes,
-        'totalTubes': failTubes+goodTubes
-    }
-    #render the document
-    templateDoc.render(context)
-    #save the document
-    templateDoc.save("reportPDF/"+documentName+".docx")
-    
-    return documentName
-
-
-def convertToPdf(documentName):
-    wdFormatPDF = 17
-
-    inputFile = os.path.abspath("reportPDF/"+documentName+".docx")
-    outputFile = os.path.abspath("reportPDF/"+documentName+".pdf")
-    
-    word = win32com.client.Dispatch('Word.Application')
-    try:
-        doc = word.Documents.Open(inputFile)
-        doc.SaveAs(outputFile, FileFormat=wdFormatPDF)
-        doc.Close()
-        print("Conversión completada con éxito.")
-    except Exception as e:
-        print("Error al convertir el documento:", e)
-    finally:
-        word.Quit()
-
-
+#importo librerias de excel
 import openpyxl
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
@@ -75,7 +7,7 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 import os 
 
 # creo una funcion que reciba una lista de listas y cree un excel con esos datos
-def createExcel(contadorTotalList,equiposFallandolist,tubosdesconectados,path):
+def createExcel(contadorTotalList,equiposFallandolist,tubosdesconectados):
 
     # creo un libro de trabajo
     wb = Workbook()
@@ -107,15 +39,12 @@ def createExcel(contadorTotalList,equiposFallandolist,tubosdesconectados,path):
             cell.font = font
     
     # creo otra hoja
-    ws2 = wb.create_sheet("Equipos_Desconectados")
+    ws2 = wb.create_sheet("TC03MPC02DP")
     # creo una tabla con los datos de la lista
     table = Table(displayName="Table2", ref="A1:C"+str(len(equiposFallandolist)))
-    # creo un estilo para la tabla y la amplio
+    # creo un estilo para la tabla
     style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False,
                         showLastColumn=False, showRowStripes=True, showColumnStripes=False)
-    
-   
-
     # aplico el estilo a la tabla
     table.tableStyleInfo = style
     # agrego la tabla a la hoja
@@ -137,7 +66,7 @@ def createExcel(contadorTotalList,equiposFallandolist,tubosdesconectados,path):
 
     # creo otra hoja
 
-    ws3 = wb.create_sheet("Total_TipoEquipos")
+    ws3 = wb.create_sheet("TC03MPC02DP")
 
     # creo una tabla con los datos de la lista
 
@@ -173,12 +102,26 @@ def createExcel(contadorTotalList,equiposFallandolist,tubosdesconectados,path):
         for cell in row:
             cell.font = font
     
-    # agrandar celdas de tablas
-    for i in range(1,4):
-        ws.column_dimensions[get_column_letter(i)].width = 30
-        ws2.column_dimensions[get_column_letter(i)].width = 30
-        ws3.column_dimensions[get_column_letter(i)].width = 30
+    # buscar el path de la carpeta donde se encuentra el archivo
 
-    # guardo todo el excel
+    path = os.path.dirname(os.path.abspath(__file__))
+
+    # creo el path del archivo
+
+    path = path + "\\TC03MPC02DPEfficien.xlsx"
+
+    #no me crea el excel
 
     wb.save(path)
+
+
+
+# creo el main
+# creo una lista de listas
+# cada lista interna es una fila de la tabla
+# cada elemento de la lista interna es una columna de la tabla
+lista = [["Date", "Efficiency", "Capacity"], ["2020-01-01", 0.9, 0.8], ["2020-01-02", 0.8, 0.7], ["2020-01-03", 0.7, 0.6], ["2020-01-04", 0.6, 0.5], ["2020-01-05", 0.5, 0.4], ["2020-01-06", 0.4, 0.3], ["2020-01-07", 0.3, 0.2], ["2020-01-08", 0.2, 0.1], ["2020-01-09", 0.1, 0.0]]
+# llamo a la funcion
+# le paso la lista
+createExcel(lista,lista,lista) 
+
