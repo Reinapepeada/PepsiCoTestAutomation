@@ -1,2 +1,2 @@
-LIGAPRINCIPAL="https://80872677:Nan90PH*@meswebgsftmexicali.azure.intra.pepsico.com/Thingworx/Runtime/index.html#master=PepsiCo_Master&mashup=MES_Dashboard&__applyThemeName=PepsiCo%20Default%20Theme&_refreshTS=1670527225809"
+LIGAPRINCIPAL="https://80872677:Nan06PH*@meswebgsftmexicali.azure.intra.pepsico.com/Thingworx/Runtime/index.html#master=PepsiCo_Master&mashup=MES_Dashboard&__applyThemeName=PepsiCo%20Default%20Theme&_refreshTS=1670527225809"
 LIGASSRS="http://80872677:Nan90PH*@pepwds34276.cww.pep.pvt/ReportServer_SQLLTMMES8005P/Pages/ReportViewer.aspx?%2fMES+Reports%2fSub%20Report%20Menu&UseGlobalDescriptions=True&ReportName=Packaging%20Summary&Category=1&RDLName=Summary%20Report&rs:Command=Render"

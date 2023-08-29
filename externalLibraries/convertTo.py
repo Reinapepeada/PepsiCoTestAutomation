@@ -6,14 +6,7 @@ import win32com.client
 from docxtpl import DocxTemplate, InlineImage
 
 
-def obtener_nombre_archivo_actual():
-    documentName=os.path.basename(__file__) if "__file__" in globals() else None
-    documentName=documentName.replace(".py","")
-    documentName=documentName.replace("_"," ")
-    documentName=documentName.upper()
-    documentName=documentName.replace("TEST","TEST ")
-    documentName=documentName.replace("TC","TC ")
-    return documentName
+
 
 def createWord(data,documentName,failTubes,goodTubes):
 
@@ -114,7 +107,7 @@ def createExcel(contadorTotalList,equiposFallandolist,tubosdesconectados,path):
             cell.font = font
     
     # creo otra hoja
-    ws2 = wb.create_sheet("TC03MPC02DP")
+    ws2 = wb.create_sheet("Equipos_Desconectados")
     # creo una tabla con los datos de la lista
     table = Table(displayName="Table2", ref="A1:C"+str(len(equiposFallandolist)))
     # creo un estilo para la tabla y la amplio
@@ -144,7 +137,7 @@ def createExcel(contadorTotalList,equiposFallandolist,tubosdesconectados,path):
 
     # creo otra hoja
 
-    ws3 = wb.create_sheet("TC03MPC02DP")
+    ws3 = wb.create_sheet("Total_TipoEquipos")
 
     # creo una tabla con los datos de la lista
 
@@ -186,8 +179,6 @@ def createExcel(contadorTotalList,equiposFallandolist,tubosdesconectados,path):
         ws2.column_dimensions[get_column_letter(i)].width = 30
         ws3.column_dimensions[get_column_letter(i)].width = 30
 
-    
-
-    #no me crea el excel
+    # guardo todo el excel
 
     wb.save(path)
