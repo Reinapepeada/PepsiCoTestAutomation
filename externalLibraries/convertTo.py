@@ -74,6 +74,87 @@ from openpyxl import Workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 import os 
 
+def recipesExcel(report,path):
+    # creo un libro de trabajo
+    wb = Workbook()
+    # creo una hoja de trabajo
+    ws = wb.active
+    # para cada lista voy a tener una hoja
+
+    # creo una tabla con los datos de la lista
+    table = Table(displayName="Recipes", ref="A1:k"+str(len(report)))
+    # creo un estilo para la tabla
+    style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False,
+                        showLastColumn=False, showRowStripes=True, showColumnStripes=False)
+    # aplico el estilo a la tabla
+    table.tableStyleInfo = style
+    # agrego la tabla a la hoja
+    ws.add_table(table)
+    # recorro la lista y la agrego a la hoja
+    for i in range(len(report)):
+        ws.cell(row=i+1, column=1).value = report[i][0]
+        ws.cell(row=i+1, column=2).value = report[i][1]
+        ws.cell(row=i+1, column=3).value = report[i][2]
+        ws.cell(row=i+1, column=4).value = report[i][3]
+        ws.cell(row=i+1, column=5).value = report[i][4]
+        ws.cell(row=i+1, column=6).value = report[i][5]
+        ws.cell(row=i+1, column=7).value = report[i][6]
+        ws.cell(row=i+1, column=8).value = report[i][7]
+        ws.cell(row=i+1, column=9).value = report[i][8]
+        ws.cell(row=i+1, column=10).value = report[i][9]
+        ws.cell(row=i+1, column=11).value = report[i][10]
+
+
+    # creo un estilo para las celdas
+    font = Font(name='Calibri', size=11, bold=False, italic=False, vertAlign=None, underline='none', strike=False, color='FF000000')
+
+    # recorro la hoja y le aplico el estilo a las celdas
+    for row in ws.iter_rows():
+        for cell in row:
+            cell.font = font
+
+    # recorro la lista del reporte por fila y creo otro reporte contando cuantos yes or no por fila
+    contadorTotalList=[["Description","Yes","No"]]
+    for i in range(1,len(report)):
+        #agrego la descripcion de cada fila
+        contadorTotalList.append([report[i][1]])
+        #agrego el contador de yes
+        contadorTotalList[i].append(report[i].count("Yes"))
+        #agrego el contador de no
+        contadorTotalList[i].append(report[i].count("No"))
+    
+    # creo una hoja
+    ws2 = wb.create_sheet("Total_Yes_No")
+    # creo una tabla con los datos de la lista
+    table = Table(displayName="Table1", ref="A1:C"+str(len(contadorTotalList)))
+    # creo un estilo para la tabla
+    style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False,
+                        showLastColumn=False, showRowStripes=True, showColumnStripes=False)
+    # aplico el estilo a la tabla
+    table.tableStyleInfo = style
+    # agrego la tabla a la hoja
+    ws2.add_table(table)
+    # recorro la lista y la agrego a la hoja
+    for i in range(len(contadorTotalList)):
+        ws2.cell(row=i+1, column=1).value = contadorTotalList[i][0]
+        ws2.cell(row=i+1, column=2).value = contadorTotalList[i][1]
+        ws2.cell(row=i+1, column=3).value = contadorTotalList[i][2]
+
+    # creo un estilo para las celdas
+    font = Font(name='Calibri', size=11, bold=False, italic=False, vertAlign=None, underline='none', strike=False, color='FF000000')
+
+    # recorro la hoja y le aplico el estilo a las celdas
+    for row in ws2.iter_rows():
+        for cell in row:
+            cell.font = font    
+    
+    
+    wb.save(path)
+    
+
+
+
+
 # creo una funcion que reciba una lista de listas y cree un excel con esos datos
 def createExcel(contadorTotalList,equiposFallandolist,tubosdesconectados,path):
 
