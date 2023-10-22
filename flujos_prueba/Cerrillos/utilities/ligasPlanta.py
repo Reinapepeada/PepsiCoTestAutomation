@@ -1,0 +1,2 @@
+LIGAPRINCIPAL="http://09384038:ARbg;9591,@pepwap21472.cww.pep.pvt:8080/Thingworx/Runtime/index.html#master=PepsiCo_Master&mashup=MES_Dashboard&__applyThemeName=PepsiCo%20Default%20Theme&_refreshTS=1681929101939"
+LIGASSRS="http://80872677:Nan90PH*@pepwds34148/ReportServer/Pages/ReportViewer.aspx?%2fMES+Reports%2fSub%20Report%20Menu&UseGlobalDescriptions=True&ReportName=Packaging%20Summary&Category=1&RDLName=Summary%20Report&rs:Command=Render"
