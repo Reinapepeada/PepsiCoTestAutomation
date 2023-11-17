@@ -1,2 +1,3 @@
-LIGAPRINCIPAL="http://80872677:Nan06PH*@meswebguadalajara.cww.pep.pvt:8080/Thingworx/Runtime/index.html#master=PepsiCo_Master&mashup=MES_Dashboard"
+LIGAPRINCIPAL="http://80872677:Nan*06PH@meswebguadalajara.cww.pep.pvt:8080/Thingworx/Runtime/index.html#master=PepsiCo_Master&mashup=MES_Dashboard"
 LIGASSRS="http://80872677:Nan90PH*@pepwdz00223.cww.pep.pvt/ReportServer_SQLLTMMES8002P/Pages/ReportViewer.aspx?%2fMES+Reports%2fSub%20Report%20Menu&UseGlobalDescriptions=True&ReportName=Packaging%20Summary&Category=1&RDLName=Summary%20Report&rs:Command=Render"
+PLANTA="GUADALAJARA"

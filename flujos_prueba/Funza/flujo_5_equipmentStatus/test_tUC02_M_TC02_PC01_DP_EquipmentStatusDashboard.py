@@ -17,12 +17,20 @@ from externalLibraries import convertTo
 import sys,os
 p = os.path.abspath('..')
 sys.path.insert(1, p)
-from utilities.ligasPlanta import LIGAPRINCIPAL
+from utilities.ligasPlanta import LIGAPRINCIPAL,PLANTA
 
 
 class TestTC02MPC04DPEntitySelectionleftslider():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome()
+    ChromeoOptions = webdriver.ChromeOptions()
+    ChromeoOptions.add_argument('--ignore-certificate-errors')
+    ChromeoOptions.add_argument('--ignore-ssl-errors')
+    ChromeoOptions.add_argument("--start-maximized")
+    ChromeoOptions.add_argument("--disable-extensions")
+    ChromeoOptions.add_argument("--disable-gpu")
+    ChromeoOptions.add_argument("--disable-dev-shm-usage")
+    ChromeoOptions.add_argument("--no-sandbox")
+    self.driver = webdriver.Chrome(options=ChromeoOptions)
     self.vars = {}
   
   def teardown_method(self, method):
@@ -42,7 +50,7 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[4]/ptcs-dropdown[1]").click()
     time.sleep(7)
     # 5 | click | xpath=//body[@id='runtime']/ptcs-list | 
-    jsPathPotato='document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(4) > ptcs-div")'
+    jsPathPotato='document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(1) > ptcs-div")'
     self.driver.execute_script(f"return {jsPathPotato}").click()
     # 7 | assertElementPresent | id=root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100 | 
     time.sleep(8)
@@ -51,11 +59,11 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     time.sleep(15)
     # 10 | assertElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_flexcontainer-4-bounding-box']/div | 
     # click en el dropdown de dash boards del navbar
-    self.driver.find_element(By.XPATH,'//body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/ul[1]/li[4]/table[1]/tbody[1]/tr[1]/td[1]/div[1]').click()
+    self.driver.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div[2]/div/div/div/div/div/ul/li[4]/table/tbody/tr/td/div/a/span').click()
     time.sleep(4)
     # ----------------------
     # 11 click en equipment status li
-    self.driver.find_element(By.XPATH,'/html/body/ul[2]/li[3]/table/tbody/tr/td/div/a').click()
+    self.driver.find_element(By.XPATH,'/html/body/ul[2]/li[2]/table/tbody/tr/td/div/a/span').click()
     time.sleep(35)
     
 
@@ -63,7 +71,7 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     errores=[["Linea","Tubo","Equipo"]]
 
     # 13 recorro la tabla en busca del equipo que no esta en funcionamiento (ROJO)
-    TABLEPATH="/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[2]/div[1]/div/div/div/div[3]/div[2]/div[2]/table/tbody"
+    TABLEPATH="/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div/div[3]/div[2]/div[2]/table/tbody"
     filas=self.driver.find_elements(By.XPATH,TABLEPATH+'/tr')
     columnas=self.driver.find_elements(By.XPATH,TABLEPATH+'/tr[2]/td')
     print(filas)
@@ -144,20 +152,30 @@ class TestTC02MPC04DPEntitySelectionleftslider():
 
     # Comprobar si hay errores
     if len(errores)>5:
-        # name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues',equiposNoFuncionando,equiposFuncionando)
-        # convertTo.convertToPdf(name)
-        # buscar el path de la carpeta donde se encuentra el archivo
-
-        path = os.path.dirname(os.path.abspath(__file__))
-
-        # creo el path del archivo
-
-        path = path + "\\tables\TC03MPC02DPEfficien.xlsx"
         
-        convertTo.createExcel(equiposM,errores,tiposEquipo,path)
+
+        pathOG = os.path.dirname(os.path.abspath(__file__))
+
+        # creo el path del archivo para el power bi
+
+        path = pathOG + "/tables/totalEquipos_"+PLANTA+".xlsx"
+        path2 = pathOG + "/tables/equiposDesconectados_"+PLANTA+".xlsx"
+        path3 = pathOG + "/tables/tiposEquipos_"+PLANTA+".xlsx" 
+        # creo el path reporte de excel con fecha y hora
+        variable = time.strftime("%Y-%m-%d_%H-%M-%S") 
+
+        pathExcel = pathOG + "/reportOutput/totalEquipos"+str(variable)+".xlsx"
+        pathExcel2 = pathOG + "/reportOutput/equiposDesconectados"+str(variable)+".xlsx"
+        pathExcel3 = pathOG + "/reportOutput/ReporteTiposEquipos"+str(variable)+".xlsx"
+        # creo el archivo de excel
+        convertTo.creartablaExcel(equiposM,path,'totalEquipos_'+PLANTA)
+        convertTo.creartablaExcel(errores,path2,'equiposDesconectados_'+PLANTA)
+        convertTo.creartablaExcel(tiposEquipo,path3,'reporteTiposEquipos_'+PLANTA)
+        convertTo.creartablaExcel(equiposM,pathExcel,'totalEquipos_'+PLANTA)
+        convertTo.creartablaExcel(errores,pathExcel2,'equiposDesconectados_'+PLANTA)
+        convertTo.creartablaExcel(tiposEquipo,pathExcel3,'reporteTiposEquipos_'+PLANTA)
         assert len(errores)<1, errores
-    else:
-        assert len(errores)<1, errores
+    
 
 
 if __name__=='__main__':

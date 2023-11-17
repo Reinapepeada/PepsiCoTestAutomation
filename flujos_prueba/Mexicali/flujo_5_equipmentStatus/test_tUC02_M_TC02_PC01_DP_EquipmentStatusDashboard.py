@@ -17,28 +17,20 @@ from externalLibraries import convertTo
 import sys,os
 p = os.path.abspath('..')
 sys.path.insert(1, p)
-from utilities.ligasPlanta import LIGAPRINCIPAL
+from utilities.ligasPlanta import LIGAPRINCIPAL,PLANTA
 
 
 class TestTC02MPC04DPEntitySelectionleftslider():
   def setup_method(self, method):
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--disable-logging")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--log-level=3")
-    chrome_options.add_argument("--disable-popup-blocking")
-    #Mantiene abierta la ventana
-    chrome_options.add_experimental_option("detach", True)
-    #Oculta mensaje "Chrome is being controlled by automated software” de la ventana
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    chrome_options.add_argument('--disable-gpu')
-    chrome_options.add_argument('--ignore-certificate-errors')
-    chrome_options.add_argument('--allow-running-insecure-content')
-    chrome_options.add_argument('--disable-web-security')
-    chrome_options.add_argument('--disable-desktop-notifications')
-    chrome_options.add_argument("--disable-extensions")
-
-    self.driver = webdriver.Chrome(options=chrome_options)
+    ChromeoOptions = webdriver.ChromeOptions()
+    ChromeoOptions.add_argument('--ignore-certificate-errors')
+    ChromeoOptions.add_argument('--ignore-ssl-errors')
+    ChromeoOptions.add_argument("--start-maximized")
+    ChromeoOptions.add_argument("--disable-extensions")
+    ChromeoOptions.add_argument("--disable-gpu")
+    ChromeoOptions.add_argument("--disable-dev-shm-usage")
+    ChromeoOptions.add_argument("--no-sandbox")
+    self.driver = webdriver.Chrome(options=ChromeoOptions)
     self.vars = {}
   
   def teardown_method(self, method):
@@ -67,11 +59,11 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     time.sleep(15)
     # 10 | assertElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_flexcontainer-4-bounding-box']/div | 
     # click en el dropdown de dash boards del navbar
-    self.driver.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div[2]/div/div/div/div/div/ul/li[3]/table/tbody/tr/td').click()
+    self.driver.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div[2]/div/div/div/div/div/ul/li[4]/table/tbody/tr/td/div/a/span').click()
     time.sleep(4)
     # ----------------------
     # 11 click en equipment status li
-    self.driver.find_element(By.XPATH,'/html/body/ul[2]/li[2]/table/tbody/tr/td').click()
+    self.driver.find_element(By.XPATH,'/html/body/ul[2]/li[2]/table/tbody/tr/td/div/a/span').click()
     time.sleep(35)
     
 
@@ -110,13 +102,17 @@ class TestTC02MPC04DPEntitySelectionleftslider():
         # evalua cual es la clase del css para determinar de que color es la celda del equipo, si es rojo es porque no esta funcionando
         # esta establecido que ese nombre e clase es el de los equipos que no estan funcionando
         # OJO hay celdas fantasmas que estan en rojo pero que no corresponden a nada y no tienen texto por eso la comprobacion de que si tienen un len>3
-        if "twdhtmlxcell cell_style2 " in equipoClase and len(nombreEquipo)>3:
+        if "twdhtmlxcell cell_style2" in equipoClase and len(nombreEquipo)>3:
           equipoNoFuncionando=True
           errores.append([linea,tubo,nombreEquipo])
-          equiposM[1][1]+=1  
-        elif "twdhtmlxcell cell_style2                 " not in equipoClase and len(nombreEquipo)>3:
-          # si el equipo esta funcionando aumento el contador de equipos que funcionan
-          equiposM[1][0]+=1
+        
+        if len(nombreEquipo)>3:
+          # si el equipo no esta funcionando aumento el contador de equipos que no funcionan      
+          if equipoNoFuncionando:
+            equiposM[1][1]+=1  
+          else:
+            # si el equipo esta funcionando aumento el contador de equipos que funcionan
+            equiposM[1][0]+=1
           
           #contar los equipos conectados y desconectados por tipo de equipo
           # Aumentando el contador de Weigher
@@ -155,22 +151,31 @@ class TestTC02MPC04DPEntitySelectionleftslider():
 
 
     # Comprobar si hay errores
-    print(errores)
-    if len(errores[0])>5:
-        # name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues',equiposNoFuncionando,equiposFuncionando)
-        # convertTo.convertToPdf(name)
-        # buscar el path de la carpeta donde se encuentra el archivo
-
-        path = os.path.dirname(os.path.abspath(__file__))
-
-        # creo el path del archivo
-
-        path = path + "\\tables\TC03MPC02DPEfficien.xlsx"
+    
         
-        convertTo.createExcel(equiposM,errores,tiposEquipo,path)
-        assert len(errores)<1, errores
-    else:
-        assert len(errores)<1, errores
+
+    pathOG = os.path.dirname(os.path.abspath(__file__))
+
+    # creo el path del archivo para el power bi
+
+    path = pathOG + "/tables/totalEquipos_"+PLANTA+".xlsx"
+    path2 = pathOG + "/tables/equiposDesconectados_"+PLANTA+".xlsx"
+    path3 = pathOG + "/tables/tiposEquipos_"+PLANTA+".xlsx" 
+    # creo el path reporte de excel con fecha y hora
+    variable = time.strftime("%Y-%m-%d_%H-%M-%S") 
+
+    pathExcel = pathOG + "/reportOutput/totalEquipos"+str(variable)+".xlsx"
+    pathExcel2 = pathOG + "/reportOutput/equiposDesconectados"+str(variable)+".xlsx"
+    pathExcel3 = pathOG + "/reportOutput/ReporteTiposEquipos"+str(variable)+".xlsx"
+    # creo el archivo de excel
+    convertTo.creartablaExcel(equiposM,path,'totalEquipos_'+PLANTA)
+    convertTo.creartablaExcel(errores,path2,'equiposDesconectados_'+PLANTA)
+    convertTo.creartablaExcel(tiposEquipo,path3,'reporteTiposEquipos_'+PLANTA)
+    convertTo.creartablaExcel(equiposM,pathExcel,'totalEquipos_'+PLANTA)
+    convertTo.creartablaExcel(errores,pathExcel2,'equiposDesconectados_'+PLANTA)
+    convertTo.creartablaExcel(tiposEquipo,pathExcel3,'reporteTiposEquipos_'+PLANTA)
+    assert len(errores)<2, errores
+    
 
 
 if __name__=='__main__':
