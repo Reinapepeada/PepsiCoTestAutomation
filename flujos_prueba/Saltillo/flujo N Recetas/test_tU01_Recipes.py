@@ -128,7 +128,10 @@ class TestTC01Recipes():
         productoDescripcion=self.driver.find_element(By.XPATH,f'{tablePath}/tr[{f}]/td[2]').text
         familiaProducto=self.driver.find_element(By.XPATH,f'{tablePath}/tr[{f}]/td[3]').text
 
-        
+        if productoID in productoDescripcion:
+          pass
+        elif 'unknown' in productoDescripcion:
+          pass
         # 27 agrego el producto a la lista
         productos.append([productoID,productoDescripcion,familiaProducto])
         

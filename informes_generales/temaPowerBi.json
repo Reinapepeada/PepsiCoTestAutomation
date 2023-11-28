@@ -1,0 +1,47 @@
+{
+    "name": "TemaAmarilloNaranja",
+    "dataColors": [
+      "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500", "#FFD700", "#FFA500", "#FF8C00",
+      "#FF6347", "#FF4500", "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500", "#FFD700"
+    ],
+    "background": "#FFFFE0",
+    "foreground": "#333333",
+    "tableAccent": "#FFD700",
+    "visualStyles": {
+      "*": {
+        "*": {
+          "dataColors": [
+            "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500",
+            "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500",
+            "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500",
+            "#FFD700"
+          ],
+          "background": "#FFFFE0",
+          "foreground": "#333333",
+          "tableAccent": "#FFD700"
+        }
+      },
+        "Table": {
+            "*": {
+            "background": "#FFFFE0",
+            "foreground": "#333333",
+            "tableAccent": "#FFD700"
+            }
+        },
+        "Card": {
+            "*": {
+            "background": "#FFFFE0",
+            "foreground": "#333333",
+            "tableAccent": "#FFD700"
+            }
+        },
+        "KPI": {
+            "*": {
+            "background": "#FFFFE0",
+            "foreground": "#333333",
+            "tableAccent": "#FFD700"
+            }
+        }
+    }
+  }
+  

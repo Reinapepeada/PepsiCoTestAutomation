@@ -19,8 +19,11 @@ class VentanaPrincipal:
 
     def iniciar(self):
         ubicaciones = ["Vallejo", "Mexicali", "Guadalajara", "Saltillo", "Cerrillos", "Funza"]
+        max_width = max(len(ubicacion) for ubicacion in ubicaciones) + 2  # Calculate the maximum width of the buttons
+
         for ubicacion in ubicaciones:
-            boton_ubicacion = tk.Button(self.ventana_principal, text=ubicacion, command=lambda ubicacion=ubicacion: self.abrir_segunda_ventana(ubicacion))
-            boton_ubicacion.pack()
-        
+            boton_ubicacion = tk.Button(self.ventana_principal, text=ubicacion, width=max_width,
+                                        command=lambda ubicacion=ubicacion: self.abrir_segunda_ventana(ubicacion))
+            boton_ubicacion.pack(anchor='center')  # Center the button
+
         self.ventana_principal.mainloop()
