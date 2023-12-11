@@ -87,7 +87,6 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     # recorro las filas de la tabla
     for f in range(2,filas+1):
       #bandera que indica si el equipo no esta en funcionamiento
-      equipoNoFuncionando=False
       # obtengo los datos de la fila
       departamento=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td[1]').text
       linea=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td[2]').text
@@ -96,17 +95,18 @@ class TestTC02MPC04DPEntitySelectionleftslider():
       print("departamento: "+departamento+" linea: "+linea+" tubo: "+tubo)
       for c in range(20, columnas+1):
         # obtengo el nombre del equipo y su clase
+        equipoNoFuncionando=False 
         equipo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td['+str(c)+']')
         nombreEquipo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td['+str(c)+']').text
         equipoClase=equipo.get_attribute("class")
         # evalua cual es la clase del css para determinar de que color es la celda del equipo, si es rojo es porque no esta funcionando
         # esta establecido que ese nombre e clase es el de los equipos que no estan funcionando
         # OJO hay celdas fantasmas que estan en rojo pero que no corresponden a nada y no tienen texto por eso la comprobacion de que si tienen un len>3
-        if "twdhtmlxcell cell_style3" in equipoClase and len(nombreEquipo)>3:
+        if "twdhtmlxcell cell_style3" in equipoClase and len(nombreEquipo)>5:
           equipoNoFuncionando=True
           errores.append([linea,tubo,nombreEquipo])
         
-        if len(nombreEquipo)>3:
+        if len(nombreEquipo)>5:
           # si el equipo no esta funcionando aumento el contador de equipos que no funcionan      
           if equipoNoFuncionando:
             equiposM[1][1]+=1  
@@ -151,31 +151,31 @@ class TestTC02MPC04DPEntitySelectionleftslider():
 
 
     # Comprobar si hay errores
-    if len(errores)>5:
+    
         
 
-        pathOG = os.path.dirname(os.path.abspath(__file__))
+    pathOG = os.path.dirname(os.path.abspath(__file__))
 
-        # creo el path del archivo para el power bi
+    # creo el path del archivo para el power bi
 
-        path = pathOG + "/tables/totalEquipos_"+PLANTA+".xlsx"
-        path2 = pathOG + "/tables/equiposDesconectados_"+PLANTA+".xlsx"
-        path3 = pathOG + "/tables/tiposEquipos_"+PLANTA+".xlsx" 
-        # creo el path reporte de excel con fecha y hora
-        variable = time.strftime("%Y-%m-%d_%H-%M-%S") 
+    path = pathOG + "/tables/totalEquipos_"+PLANTA+".xlsx"
+    path2 = pathOG + "/tables/equiposDesconectados_"+PLANTA+".xlsx"
+    path3 = pathOG + "/tables/tiposEquipos_"+PLANTA+".xlsx" 
+    # creo el path reporte de excel con fecha y hora
+    variable = time.strftime("%Y-%m-%d_%H-%M-%S") 
 
-        pathExcel = pathOG + "/reportOutput/totalEquipos"+str(variable)+".xlsx"
-        pathExcel2 = pathOG + "/reportOutput/equiposDesconectados"+str(variable)+".xlsx"
-        pathExcel3 = pathOG + "/reportOutput/ReporteTiposEquipos"+str(variable)+".xlsx"
-        # creo el archivo de excel
-        convertTo.creartablaExcel(equiposM,path,'totalEquipos_'+PLANTA)
-        convertTo.creartablaExcel(errores,path2,'equiposDesconectados_'+PLANTA)
-        convertTo.creartablaExcel(tiposEquipo,path3,'reporteTiposEquipos_'+PLANTA)
-        convertTo.creartablaExcel(equiposM,pathExcel,'totalEquipos_'+PLANTA)
-        convertTo.creartablaExcel(errores,pathExcel2,'equiposDesconectados_'+PLANTA)
-        convertTo.creartablaExcel(tiposEquipo,pathExcel3,'reporteTiposEquipos_'+PLANTA)
-        assert len(errores)<1, errores
-    
+    pathExcel = pathOG + "/reportOutput/totalEquipos"+str(variable)+".xlsx"
+    pathExcel2 = pathOG + "/reportOutput/equiposDesconectados"+str(variable)+".xlsx"
+    pathExcel3 = pathOG + "/reportOutput/ReporteTiposEquipos"+str(variable)+".xlsx"
+    # creo el archivo de excel
+    convertTo.creartablaExcel(equiposM,path,'totalEquipos_'+PLANTA)
+    convertTo.creartablaExcel(errores,path2,'equiposDesconectados_'+PLANTA)
+    convertTo.creartablaExcel(tiposEquipo,path3,'reporteTiposEquipos_'+PLANTA)
+    convertTo.creartablaExcel(equiposM,pathExcel,'totalEquipos_'+PLANTA)
+    convertTo.creartablaExcel(errores,pathExcel2,'equiposDesconectados_'+PLANTA)
+    convertTo.creartablaExcel(tiposEquipo,pathExcel3,'reporteTiposEquipos_'+PLANTA)
+    assert len(errores)<1, errores
+
 
 
 if __name__=='__main__':

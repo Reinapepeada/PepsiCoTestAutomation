@@ -86,8 +86,6 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     
     # recorro las filas de la tabla
     for f in range(2,filas+1):
-      #bandera que indica si el equipo no esta en funcionamiento
-      equipoNoFuncionando=False
       # obtengo los datos de la fila
       departamento=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td[1]').text
       linea=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td[2]').text
@@ -95,6 +93,8 @@ class TestTC02MPC04DPEntitySelectionleftslider():
       # recorro las columnas de la fila
       print("departamento: "+departamento+" linea: "+linea+" tubo: "+tubo)
       for c in range(20, columnas+1):
+        #bandera que indica si el equipo no esta en funcionamiento
+        equipoNoFuncionando=False
         # obtengo el nombre del equipo y su clase
         equipo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td['+str(c)+']')
         nombreEquipo=self.driver.find_element(By.XPATH,TABLEPATH+'/tr['+str(f)+']/td['+str(c)+']').text
@@ -102,11 +102,11 @@ class TestTC02MPC04DPEntitySelectionleftslider():
         # evalua cual es la clase del css para determinar de que color es la celda del equipo, si es rojo es porque no esta funcionando
         # esta establecido que ese nombre e clase es el de los equipos que no estan funcionando
         # OJO hay celdas fantasmas que estan en rojo pero que no corresponden a nada y no tienen texto por eso la comprobacion de que si tienen un len>3
-        if "twdhtmlxcell cell_style1" in equipoClase and len(nombreEquipo)>3:
+        if "twdhtmlxcell cell_style2" in equipoClase and len(nombreEquipo)>6:
           equipoNoFuncionando=True
           errores.append([linea,tubo,nombreEquipo])
         
-        if len(nombreEquipo)>3:
+        if len(nombreEquipo)>6:
           # si el equipo no esta funcionando aumento el contador de equipos que no funcionan      
           if equipoNoFuncionando:
             equiposM[1][1]+=1  
@@ -116,33 +116,33 @@ class TestTC02MPC04DPEntitySelectionleftslider():
           
           #contar los equipos conectados y desconectados por tipo de equipo
           # Aumentando el contador de Weigher
-          if equipoNoFuncionando and c==21:
+          if equipoNoFuncionando and c==20:
             tiposEquipo[1][2]+=1
-          elif c==21:
+          elif c==20:
             tiposEquipo[1][1]+=1
           
           # Aumentando el contador de BagMaker
-          if equipoNoFuncionando and c==22:
+          if equipoNoFuncionando and c==21:
             tiposEquipo[2][2]+=1
-          elif c==22:
+          elif c==21:
             tiposEquipo[2][1]+=1
           
           # Aumentando el contador de Inspector
-          if equipoNoFuncionando and c==23:
+          if equipoNoFuncionando and c==22:
             tiposEquipo[3][2]+=1
-          elif c==23:
+          elif c==22:
             tiposEquipo[3][1]+=1
           
           # Aumentando el contador de CheckWeigher
-          if equipoNoFuncionando and c==24:
+          if equipoNoFuncionando and c==23:
             tiposEquipo[4][2]+=1
-          elif c==24:
+          elif c==23:
             tiposEquipo[4][1]+=1
           
           # Aumentando el contador de CasePacker
-          if equipoNoFuncionando and c==25:
+          if equipoNoFuncionando and c==24:
             tiposEquipo[5][2]+=1
-          elif c==25:
+          elif c==24:
             tiposEquipo[5][1]+=1
             
 

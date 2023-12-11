@@ -1,47 +1,48 @@
 {
-    "name": "TemaAmarilloNaranja",
-    "dataColors": [
-      "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500", "#FFD700", "#FFA500", "#FF8C00",
-      "#FF6347", "#FF4500", "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500", "#FFD700"
-    ],
-    "background": "#FFFFE0",
-    "foreground": "#333333",
-    "tableAccent": "#FFD700",
-    "visualStyles": {
-      "*": {
-        "*": {
-          "dataColors": [
-            "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500",
-            "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500",
-            "#FFD700", "#FFA500", "#FF8C00", "#FF6347", "#FF4500",
-            "#FFD700"
-          ],
-          "background": "#FFFFE0",
-          "foreground": "#333333",
-          "tableAccent": "#FFD700"
-        }
-      },
-        "Table": {
-            "*": {
-            "background": "#FFFFE0",
-            "foreground": "#333333",
-            "tableAccent": "#FFD700"
-            }
-        },
-        "Card": {
-            "*": {
-            "background": "#FFFFE0",
-            "foreground": "#333333",
-            "tableAccent": "#FFD700"
-            }
-        },
-        "KPI": {
-            "*": {
-            "background": "#FFFFE0",
-            "foreground": "#333333",
-            "tableAccent": "#FFD700"
-            }
-        }
-    }
-  }
-  
+  "name": "AMARILLO NARANJA",
+  "dataColors": [
+    "#FFFF00",
+    "#FFFA00",
+    "#FFF500",
+    "#FFF000",
+    "#FFEB00",
+    "#FFE600",
+    "#FFE100",
+    "#FFDC00",
+    "#FFD700",
+    "#FFD200",
+    "#FFCD00",
+    "#FFC800",
+    "#FFC300",
+    "#FFBE00",
+    "#FFB900",
+    "#FFB400",
+    "#FFAF00",
+    "#FFAA00",
+    "#FFA500",
+    "#FFA000",
+    "#FF9B00",
+    "#FF9600",
+    "#FF9100",
+    "#FF8C00",
+    "#FF8700",
+    "#FF8200",
+    "#FF7D00",
+    "#FF7800",
+    "#FF7300",
+    "#FF6E00",
+    "#FF6900",
+    "#FF6400",
+    "#FF5F00",
+    "#FF5A00",
+    "#FF5500",
+    "#FF5000",
+    "#FF4B00",
+    "#FF4600",
+    "#FF4100",
+    "#FF3C00"
+  ],
+  "minimum": "#FFFF00",
+  "maximum": "#FF3C00",
+  "center": "#FFA000"
+}

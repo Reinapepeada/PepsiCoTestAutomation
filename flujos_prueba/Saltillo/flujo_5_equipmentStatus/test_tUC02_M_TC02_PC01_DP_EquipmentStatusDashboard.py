@@ -88,10 +88,8 @@ class TestTC02MPC04DPEntitySelectionleftslider:
         TABLEPATH = "/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div/div[2]/div/div[1]/div/div/div[3]/div[2]/div[2]/table/tbody"
         filas = self.driver.find_elements(By.XPATH, TABLEPATH + "/tr")
         columnas = self.driver.find_elements(By.XPATH, TABLEPATH + "/tr[2]/td")
-        print(filas)
         filas = len(filas)
         columnas = len(columnas)
-        print(filas, columnas)
         # matriz de equipos funcionando y no funcionando
         equiposM = [
             ["Equipos Funcionando", "Equipos No Funcionando", "Total de Equipos"],
@@ -110,8 +108,6 @@ class TestTC02MPC04DPEntitySelectionleftslider:
 
         # recorro las filas de la tabla
         for f in range(2, filas + 1):
-            # bandera que indica si el equipo no esta en funcionamiento
-            equipoNoFuncionando = False
             # obtengo los datos de la fila
             departamento = self.driver.find_element(
                 By.XPATH, TABLEPATH + "/tr[" + str(f) + "]/td[1]"
@@ -126,7 +122,9 @@ class TestTC02MPC04DPEntitySelectionleftslider:
             print(
                 "departamento: " + departamento + " linea: " + linea + " tubo: " + tubo
             )
-            for c in range(20, columnas + 1):
+            for c in range(16, columnas + 1):
+                # bandera que indica si el equipo no esta en funcionamiento
+                equipoNoFuncionando = False
                 # obtengo el nombre del equipo y su clase
                 equipo = self.driver.find_element(
                     By.XPATH, TABLEPATH + "/tr[" + str(f) + "]/td[" + str(c) + "]"
@@ -138,11 +136,11 @@ class TestTC02MPC04DPEntitySelectionleftslider:
                 # evalua cual es la clase del css para determinar de que color es la celda del equipo, si es rojo es porque no esta funcionando
                 # esta establecido que ese nombre e clase es el de los equipos que no estan funcionando
                 # OJO hay celdas fantasmas que estan en rojo pero que no corresponden a nada y no tienen texto por eso la comprobacion de que si tienen un len>3
-                if "twdhtmlxcell cell_style3" in equipoClase and len(nombreEquipo) > 3:
+                if "twdhtmlxcell cell_style3" in equipoClase and len(nombreEquipo) > 5:
                     equipoNoFuncionando = True
                     errores.append([linea, tubo, nombreEquipo])
 
-                if len(nombreEquipo) > 3:
+                if len(nombreEquipo) > 5:
                     # si el equipo no esta funcionando aumento el contador de equipos que no funcionan
                     if equipoNoFuncionando:
                         equiposM[1][1] += 1
@@ -152,33 +150,33 @@ class TestTC02MPC04DPEntitySelectionleftslider:
 
                     # contar los equipos conectados y desconectados por tipo de equipo
                     # Aumentando el contador de Weigher
-                    if equipoNoFuncionando and c == 21:
+                    if equipoNoFuncionando and c == 16:
                         tiposEquipo[1][2] += 1
-                    elif c == 21:
+                    elif c == 16:
                         tiposEquipo[1][1] += 1
 
                     # Aumentando el contador de BagMaker
-                    if equipoNoFuncionando and c == 22:
+                    if equipoNoFuncionando and c == 17:
                         tiposEquipo[2][2] += 1
-                    elif c == 22:
+                    elif c == 17:
                         tiposEquipo[2][1] += 1
 
                     # Aumentando el contador de Inspector
-                    if equipoNoFuncionando and c == 23:
+                    if equipoNoFuncionando and c == 18:
                         tiposEquipo[3][2] += 1
-                    elif c == 23:
+                    elif c == 18:
                         tiposEquipo[3][1] += 1
 
                     # Aumentando el contador de CheckWeigher
-                    if equipoNoFuncionando and c == 24:
+                    if equipoNoFuncionando and c == 19:
                         tiposEquipo[4][2] += 1
-                    elif c == 24:
+                    elif c == 19:
                         tiposEquipo[4][1] += 1
 
                     # Aumentando el contador de CasePacker
-                    if equipoNoFuncionando and c == 25:
+                    if equipoNoFuncionando and c == 20:
                         tiposEquipo[5][2] += 1
-                    elif c == 25:
+                    elif c == 20:
                         tiposEquipo[5][1] += 1
 
         # sumo los equipos
