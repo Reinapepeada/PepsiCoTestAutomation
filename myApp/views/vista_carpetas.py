@@ -1,4 +1,3 @@
-
 import tkinter as tk
 import os
 import subprocess
@@ -34,23 +33,21 @@ class ReportFoldersWindow:
     def open_report_folder(self, folder_name):
         try:
             # Construct the folder path using an f-string
-            folder_path = f"C:/Users/09384038/Desktop/proyect/PepsiCoTestAutomation/flujos_prueba/{self.ubicacion}/{folder_name}/reportOutput"
+            folder_path =fr"C:\Users\09384038\Desktop\proyect\PepsiCoTestAutomation\flujos_prueba\{self.ubicacion}\{folder_name}\reportOutput"
             
-            # Open the folder using the default file explorer
-            subprocess.Popen(f'explorer "{folder_path}"')
+            # Print the constructed folder path for debugging
+            print("Folder Path:", folder_path)
+
+            # Check if the folder exists
+            if os.path.exists(folder_path):
+                # Open the folder using the default file explorer
+                subprocess.Popen(['explorer',folder_path], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            else:
+                messagebox.showinfo("Info", "Folder does not exist.")
         except Exception as e:
+            # Display a detailed error message
             messagebox.showerror("Error", f"An error occurred while opening the folder: {e}")
 
     def mostrar(self):
         self.ventana.mainloop()
 
-# Example usage:
-# ventana_principal = tk.Tk()
-# ubicacion = "Example Location"
-# flujos = [("Flow 1", "flow1"), ("Flow 2", "flow2"), ("Flow 3", "flow3")]
-# report_window = ReportFoldersWindow(ventana_principal, ubicacion, flujos)
-# report_window.mostrar()
-
-
-
-    

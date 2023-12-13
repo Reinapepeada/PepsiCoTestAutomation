@@ -114,7 +114,7 @@ class TestTC01Recipes:
                 self.driver.execute_script(
                     f'return {itemPath}({i}) > ptcs-div")'
                 ).click()
-                time.sleep(5)
+                time.sleep(6)
                 # 16 analizo la tabla
                 tablePath = "/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[3]/div/div/div[3]/div[2]/div[2]/table/tbody"
                 # 17 obtengo el numero de filas
@@ -186,9 +186,26 @@ class TestTC01Recipes:
         self.driver.find_element(
             By.XPATH, "/html/body/ul[2]/li[2]/table/tbody/tr/td/div/a/span"
         ).click()
-        time.sleep(20)
+        time.sleep(10)
         # 22 declaro el path de la tabal de la cual voy a sacar el total de productos de la planta
         tablePath = "/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[3]/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/div[2]/div[2]/table/tbody"
+        # Encuentra el elemento de la tabla (ajusta el selector según sea necesario)
+        
+        # Desplázate hasta el último elemento de la tabla utilizando JavaScript
+
+        try:
+            for i in range(1, 30):
+                # Encuentra el último elemento de la tabla
+                ultimo_elemento = self.driver.find_element(By.XPATH, "//table[@class='obj']//tr[last()]")
+
+                # Desplázate hasta el último elemento de la tabla utilizando JavaScript
+                self.driver.execute_script("arguments[0].scrollIntoView(true);", ultimo_elemento)
+
+                # Espera hasta que el último elemento de la tabla sea visible
+                time.sleep(0.5)
+        
+        except:
+            pass
 
         # 23 obtengo el numero de filas
         fila = len(self.driver.find_elements(By.XPATH, f"{tablePath}/tr"))
@@ -208,9 +225,7 @@ class TestTC01Recipes:
                     By.XPATH, f"{tablePath}/tr[{f}]/td[3]"
                 ).text
                 
-                print(productoID)
-                # si el id del producto es el mismo que la descripcion o es unknown o Unknown no lo agrego a la lista
-                if '300' in productoID and productoID != productoDescripcion and productoID.isdigit():
+                if '3000' in productoID  and productoID.isdigit():
                     print(productoID)
                     productos.append([productoID, productoDescripcion, familiaProducto])
                 

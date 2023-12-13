@@ -13,7 +13,7 @@ def ejecutar_comando_con_ruta(ruta, comando):
 
 class SegundaVentana:
     def __init__(self, ventana_principal, ubicacion):
-        flujos=[["KPIS principales", "flujo_1_optimalRangesKpisDashboardPackaging"],['Downtime less8hours', 'flujo_2_dowtimes-8hoursExpired'],["% Waste-Unknowbags", 'flujo_3_%waste-unknowBags%'],["Equipment Status", "flujo_5_equipmentStatus"],["Adopcion de Recetas", "flujo N Recetas"],["Dashboard vs SRSS", "flujo_6_DashboardvsSRSS"],["Totalwast - CHW- OverUnder", "flujo_8_totalWaste-Chwaste-overUnder"],["Downtimes AU-TE-NE", "flujo_9_downtimesAU-TE-NE"],["kpisByOperator", "flujo_10_KpisByOperator"],["CHW-MHW", "flujo_11_CHW-MHW"],["TotalBags-Goodbags", "flujo_12_TotalBags-GoodBags"],["UnderOverWeight", "flujo_13_UnderOverWeight"],["Adopcion de Recetas", "flujo_14_"],["Adopcion de Recetas", "flujo_15_"]]
+        flujos=[["KPIS principales", "flujo_1_optimalRangesKpisDashboardPackaging"],['Downtime less8hours', 'flujo_2_dowtimes-8hoursExpired'],["% Waste-Unknowbags", 'flujo_3_%waste-unknowBags%'],["Equipment Status", "flujo_5_equipmentStatus"],["Adopcion de Recetas", "flujo N Recetas"],["Dashboard vs SRSS", "flujo_6_DashboardvsSRSS"],["Totalwast - CHW- OverUnder", "flujo_8_totalWaste-Chwaste-overUnder"],["Downtimes AU-TE-NE", "flujo_9_downtimesAU-TE-NE"],["kpisByOperator", "flujo_10_KpisByOperator"],["CHW-MHW", "flujo_11_CHW-MHW"],["TotalBags-Goodbags", "flujo_12_TotalBags-GoodBags"],["UnderOverWeight", "flujo_13_UnderOverWeight"],["x", "flujo_14_"],["x", "flujo_15_"]]
         self.ventana = tk.Toplevel(ventana_principal)
         self.ventana.protocol("WM_DELETE_WINDOW", self.ventana.destroy)
         self.ventana.resizable(False, False)

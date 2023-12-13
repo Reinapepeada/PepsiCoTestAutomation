@@ -18,7 +18,7 @@ class VentanaPrincipal:
         segunda_ventana.mostrar()
 
     def iniciar(self):
-        ubicaciones = ["Vallejo", "Mexicali", "Guadalajara", "Saltillo", "Cerrillos", "Funza"]
+        ubicaciones = ["Vallejo", "Mexicali", "Guadalajara", "Saltillo", "Cerrillos", "Funza","7Lagoas"]
         max_width = max(len(ubicacion) for ubicacion in ubicaciones) + 2  # Calculate the maximum width of the buttons
 
         for ubicacion in ubicaciones:

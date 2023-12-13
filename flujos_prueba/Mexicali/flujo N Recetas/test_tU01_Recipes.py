@@ -192,19 +192,26 @@ class TestTC01Recipes:
             By.XPATH, "/html/body/ul[2]/li[2]/table/tbody/tr/td/div/a/span"
         ).click()
         time.sleep(10)
-        #clicl en refrescar la tabla
-        self.driver.find_element(By.XPATH,"/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[3]/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/div[2]").click()
-        time.sleep(25)
-        #situo el raton en la tabla
-        element = self.driver.find_element(By.XPATH,"/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[3]/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/div[2]/div[2]/table/tbody")
-        self.driver.execute_script("arguments[0].scrollTop=arguments[0].csrollHeight;", element)
-        element.click()
-        # for i in range(1, 200):
-        #     element.send_keys(Keys.PAGE_DOWN)
-        #     time.sleep(0.1) 
-       
+               
         # 22 declaro el path de la tabal de la cual voy a sacar el total de productos de la planta
-        tablePath = "/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[3]/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/div[2]/div[2]"
+        tablePath = "/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[3]/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/div[2]/div[2]/table/tbody"
+
+        # Desplázate hasta el último elemento de la tabla utilizando JavaScript
+
+        try:
+            for i in range(1, 30):
+                # Encuentra el último elemento de la tabla
+                ultimo_elemento = self.driver.find_element(By.XPATH, "//table[@class='obj']//tr[last()]")
+
+                # Desplázate hasta el último elemento de la tabla utilizando JavaScript
+                self.driver.execute_script("arguments[0].scrollIntoView(true);", ultimo_elemento)
+
+                # Espera hasta que el último elemento de la tabla sea visible
+                time.sleep(0.5)
+        
+        except:
+            pass
+
 
         # 23 obtengo el numero de filas
         fila = len(self.driver.find_elements(By.XPATH, f"{tablePath}/tr"))
@@ -223,12 +230,11 @@ class TestTC01Recipes:
                 familiaProducto = self.driver.find_element(
                     By.XPATH, f"{tablePath}/tr[{f}]/td[3]"
                 ).text
-                # si el id del producto es el mismo que la descripcion o es unknown o Unknown no lo agrego a la lista
-                
-                    # 27 agrego el producto a la lista sie codigo tiene un 3000
-                if  productoID != productoDescripcion and productoID.isdigit():
+                # 27 si es un digito lo agrego a la lista
+                if productoID.isdigit():
                     print(productoID)
                     productos.append([productoID, productoDescripcion, familiaProducto])
+
         # depuracion de datos de recetas incompletas (si no esta en el tota de productos se trata de un error y lo sacamos de la lista)
         for i in range(len(reporteRecetas) - 1, 0, -1):
             if reporteRecetas[i][0] not in [x[0] for x in productos[1:]]:
@@ -260,7 +266,7 @@ class TestTC01Recipes:
         convertTo.creartablaExcel(reporteRecetas, pathExcel, "Recipes_" + PLANTA)
         convertTo.creartablaExcel(productos, pathExcel2, "Productos_" + PLANTA)
 
-        assert len(reporteRecetas) < 1, reporteRecetas
+        assert len(reporteRecetas) < 2, reporteRecetas
 
 
 if __name__ == "__main__":

@@ -47,7 +47,7 @@ class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
     goodTubes=0
     self.driver.get(LIGAPRINCIPAL)
     # 2 | waitForElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box']/div[3] | 11000
-    time.sleep(45)
+    time.sleep(25)
     # 3 | click | xpath=//div[@id='root_pagemashupcontainer-6_flexcontainer-200-bounding-box']/div[2] | 
     self.driver.find_element(By.XPATH, "//div[@id=\'root_pagemashupcontainer-6_flexcontainer-200-bounding-box\']/div[2]").click()
     time.sleep(15)
@@ -56,7 +56,7 @@ class TestTC03MPC02DPEfficiencyCapacityWasteandDowntimevalues():
     self.driver.execute_script(f"return {jsDropdown}").click()
     time.sleep(5)
     # 5 | click | xpath=//body[@id='runtime']/ptcs-list | 
-    jsPathPotato='document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(4) > ptcs-div")'
+    jsPathPotato='document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(1) > ptcs-div")'
     self.driver.execute_script(f"return {jsPathPotato}").click()
     time.sleep(5)
     # 6 | click | xpath=//div[@id='cell_PlantModelSelectionForNavigation_RepeaterButton-12_ptcsbutton-43-bounding-box']/ptcs-button | 
