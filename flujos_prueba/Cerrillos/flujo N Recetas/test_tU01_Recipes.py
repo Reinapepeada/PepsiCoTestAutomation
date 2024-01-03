@@ -238,7 +238,12 @@ class TestTC01Recipes:
         # depuracion de datos de recetas incompletas (si no esta en el tota de productos se trata de un error y lo sacamos de la lista)
         for i in range(len(reporteRecetas) - 1, 0, -1):
             if reporteRecetas[i][0] not in [x[0] for x in productos[1:]]:
+                if "Product Description not defined" in reporteRecetas[i][1]:
+                    pass
+                # print(reporteRecetas[i][0])
                 reporteRecetas.pop(i)
+            if reporteRecetas[i][0] in [x[0] for x in productos[1:]]:
+                print(reporteRecetas[i][0])
         # Comprobar si hay errores
         # name=convertTo.createWord(errores, 'TC03MPC02DPEfficiencyCapacityWasteandDowntimevalues',equiposNoFuncionando,equiposFuncionando)
         # convertTo.convertToPdf(name)

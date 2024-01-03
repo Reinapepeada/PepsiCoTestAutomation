@@ -42,7 +42,7 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     self.driver.get(LIGAPRINCIPAL)
     # 2 | waitForElementPresent | xpath=//div[@id='root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box']/div[3] | 11000
     # WebDriverWait(self.driver, 100).until(expected_conditions.presence_of_element_located((By.XPATH, "//div[@id=\'root_pagemashupcontainer-6_ContainedMashup-13_ContainedMashup-75_mashupcontainer-5_gridadvanced-109-bounding-box\']/div[3]")))
-    time.sleep(20)
+    time.sleep(10)
     # 3 | click | xpath=//div[@id='root_pagemashupcontainer-6_flexcontainer-200-bounding-box']/div[2] | 
     self.driver.find_element(By.XPATH, "//div[@id=\'root_pagemashupcontainer-6_flexcontainer-200-bounding-box\']/div[2]").click()
     time.sleep(7)
@@ -50,7 +50,7 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[4]/ptcs-dropdown[1]").click()
     time.sleep(7)
     # 5 | click | xpath=//body[@id='runtime']/ptcs-list | 
-    jsPathPotato='document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(4) > ptcs-div")'
+    jsPathPotato='document.querySelector("#root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child(3) > ptcs-div > ptcs-label").shadowRoot.querySelector("#label")'
     self.driver.execute_script(f"return {jsPathPotato}").click()
     # 7 | assertElementPresent | id=root_pagemashupcontainer-6_ContainedMashup-105_ptcsdropdown-100 | 
     time.sleep(8)
@@ -63,7 +63,7 @@ class TestTC02MPC04DPEntitySelectionleftslider():
     time.sleep(4)
     # ----------------------
     # 11 click en equipment status li
-    self.driver.find_element(By.XPATH,'/html/body/ul[2]/li[4]/table/tbody/tr/td/div/a').click()
+    self.driver.find_element(By.XPATH,'/html/body/ul[2]/li[3]/table/tbody/tr/td/div/a/span').click()
     time.sleep(35)
     
 

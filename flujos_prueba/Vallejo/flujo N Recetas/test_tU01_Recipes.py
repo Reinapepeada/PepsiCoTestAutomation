@@ -76,7 +76,7 @@ class TestTC01Recipes:
         # ----------------------
         # 11 click en Recetas incompletas li
         self.driver.find_element(
-            By.XPATH, "/html/body/ul[2]/li[7]/table/tbody/tr/td/div/a/span"
+            By.XPATH, "/html/body/ul[2]/li[6]/table/tbody/tr/td/div/a/span"
         ).click()
         time.sleep(6)
         # reporte de recetas = [] con enunciados

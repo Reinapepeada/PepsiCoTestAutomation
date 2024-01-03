@@ -1,0 +1,8 @@
+docx==0.2.4
+docxtpl==0.16.7
+openpyxl==3.1.2
+pytest==7.4.0
+python_docx==0.8.11
+pywin32==306
+selenium==4.16.0
+tkinter

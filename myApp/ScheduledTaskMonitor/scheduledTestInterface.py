@@ -56,6 +56,8 @@ class ScheduledTestInterface:
             try:
                 os.chdir(f"C:/Users/09384038/Desktop/proyect/PepsiCoTestAutomation/flujos_prueba/{planta}/flujo N Recetas")
                 resultado = os.system("pytest")
+                os.chdir(f"C:/Users/09384038/Desktop/proyect/PepsiCoTestAutomation/flujos_prueba/{planta}/flujo_5_equipmentStatus")
+                resultado = os.system("pytest")
                 if resultado == 0:
                     self.mensaje_estado.set("Comandos ejecutados correctamente.")
                 else:

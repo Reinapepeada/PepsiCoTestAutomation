@@ -76,7 +76,7 @@ class TestTC01Recipes:
         # ----------------------
         # 11 click en Recetas incompletas li
         self.driver.find_element(
-            By.XPATH, "/html/body/ul[2]/li[6]/table/tbody/tr/td/div/a/span"
+            By.XPATH, "/html/body/ul[2]/li[5]/table/tbody/tr/td/div/a/span"
         ).click()
         time.sleep(6)
         # reporte de recetas = [] con enunciados
@@ -106,7 +106,7 @@ class TestTC01Recipes:
                 jsDropdown = 'document.querySelector("#root_pagemashupcontainer-6_ptcsdropdown-49").shadowRoot.querySelector("#select")'
                 # 14 hago click en el dropdown
                 self.driver.execute_script(f"return {jsDropdown}").click()
-                time.sleep(3)
+                time.sleep(2)
                 familia = self.driver.execute_script(
                     f'return document.querySelector("#root_pagemashupcontainer-6_ptcsdropdown-49-external-wc").shadowRoot.querySelector("#chunker > div > div > ptcs-list-item:nth-child({i}) > ptcs-div > ptcs-label").shadowRoot.querySelector("#label")'
                 ).text
@@ -156,6 +156,8 @@ class TestTC01Recipes:
                             By.XPATH, f"{tablePath}/tr[{f}]/td[11]"
                         ).text
 
+                        
+
                         # 19 agrego los datos a la lista
                         reporteRecetas.append(
                             [
@@ -186,7 +188,7 @@ class TestTC01Recipes:
         self.driver.find_element(
             By.XPATH, "/html/body/ul[2]/li[2]/table/tbody/tr/td/div/a/span"
         ).click()
-        time.sleep(10)
+        time.sleep(5)
         # 22 declaro el path de la tabal de la cual voy a sacar el total de productos de la planta
         tablePath = "/html/body/div[1]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[3]/div/div/div[2]/div/div[3]/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/div[2]/div[2]/table/tbody"
         # Encuentra el elemento de la tabla (ajusta el selector según sea necesario)
@@ -202,7 +204,7 @@ class TestTC01Recipes:
                 self.driver.execute_script("arguments[0].scrollIntoView(true);", ultimo_elemento)
 
                 # Espera hasta que el último elemento de la tabla sea visible
-                time.sleep(0.5)
+                time.sleep(0.4)
         
         except:
             pass
